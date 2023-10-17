@@ -3,7 +3,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAA
 https://docs.google.com/document/d/1zbAuqgOBTvDG6dCNMh7y1j00wCfuTcsfiE1m4NVtN8E/edit
 
 to run the code:
-1. add it as a java project in Eclipse
+1. import it as a java project in Eclipse
 2. follow the instructions in the StackOverflow link to change the Run Configuations - Point to the directory: Nutrition_App_EECS_3311\Nutrifit\src\nutrifit
 https://stackoverflow.com/questions/31611785/sqlite-jdbc-eclipse-database-relative-path
 3. Run Program. You should receive Output similar to this:
