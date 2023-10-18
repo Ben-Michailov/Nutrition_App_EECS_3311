@@ -28,7 +28,7 @@ public class ReadWriteController {
      */  
 	
 	
-	enum MealType {
+	public enum MealType {
 		  BREAKFAST,
 		  LUNCH,
 		  DINNER,
@@ -89,29 +89,35 @@ public class ReadWriteController {
     }
    
     
-    public void debugDumpDatabase(){
+    public String debugDumpDatabase(){
         String sql = "SELECT * FROM healthInfoLog";
-        
+        String output = "";
         try (Connection conn = this.connect();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
             
             // loop through the result set
             while (rs.next()) {
-                System.out.println(rs.getDate("date") +  "\t" + 
-                                   rs.getString("meal") + "\t" +
-                                   rs.getInt("caloriesConsumed")+ "\t" +
-                                   rs.getDouble("protein")+ "\t" +
-                                   rs.getDouble("fat")+ "\t" +
-                                   rs.getDouble("carbohydrates")+ "\t" +
-                                   rs.getDouble("sugar")+ "\t" +
-                                   rs.getInt("caloriesBurned"));
+            	output =rs.getDate("date") +  "\t" + 
+                        rs.getString("meal") + "\t" +
+                        rs.getInt("caloriesConsumed")+ "\t" +
+                        rs.getDouble("protein")+ "\t" +
+                        rs.getDouble("fat")+ "\t" +
+                        rs.getDouble("carbohydrates")+ "\t" +
+                        rs.getDouble("sugar")+ "\t" +
+                        rs.getInt("caloriesBurned")+"\n";
             }
+            
+            
             conn.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        
+        return output;
     }
+    
+    
     
     private boolean doesMealExist(char meal, long date) {
     	String sql = "SELECT COUNT(*) FROM HealthInfoLog WHERE date = "+date+" AND meal ='"+meal+"'"; 
@@ -132,6 +138,46 @@ public class ReadWriteController {
             }
     	 
     	 	return false;
+    }
+    
+    public String[] foodNames() {
+    	String[] output = new String[5689];
+    	//String[] output = new String[5];
+    	int i = 0;
+    	String sql = "SELECT FoodDescription FROM foodname"; 
+    	try (Connection conn = this.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+    		while (rs.next()) {
+            	output[i] =rs.getString("FoodDescription");
+            	if (i<5688) {
+            		i++;
+            	}
+            	
+    		}
+    	} catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+   	 
+    	return output;
+    }
+    
+    public int IDOfAGivenFood(String foodName) {
+    	int output = 2;
+    	String sql = "SELECT FoodID FROM foodname WHERE FoodDescription='"+foodName+"'"; 
+    	try (Connection conn = this.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+    		output = rs.getInt("FoodID");
+    		
+    	} catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    	
+    	return output;
+    	
     }
     
     public void storeMeal(MealType mealType, int foodID, int amount, Date date) throws Exception {
@@ -170,7 +216,7 @@ public class ReadWriteController {
     	double carbohydrates=0;
     	double sugar=0;
     	
-    	int ratioToHundredGrams = amount/100;
+    	double ratioToHundredGrams = amount/100.0;
     	
     	int i =0;
     	
@@ -193,7 +239,7 @@ public class ReadWriteController {
             		carbohydrates = rs.getDouble("NutrientValue") * ratioToHundredGrams;
             	}
             	else if (i==3) {
-            		caloriesConsumed = rs.getInt("NutrientValue") * ratioToHundredGrams;
+            		caloriesConsumed = (int) (Math.round(rs.getInt("NutrientValue") * ratioToHundredGrams));
             	}
             	else{
             		sugar = rs.getDouble("NutrientValue") * ratioToHundredGrams;
@@ -239,7 +285,7 @@ public class ReadWriteController {
    
   
     public static void main(String[] args) throws IOException, InterruptedException, Exception {  
-        ReadWriteController test = new ReadWriteController();
+        /*ReadWriteController test = new ReadWriteController();
         test.connect();  
         test.createNewTable();
         Date d1 = new Date(123,9,16); 
@@ -247,6 +293,6 @@ public class ReadWriteController {
         test.debugDumpDatabase();
         
         //test.insert()
-        System.out.println(d1);
+        System.out.println(d1);*/
     }  
 }  
