@@ -18,6 +18,7 @@ public class WeightLossGui {
         initialize();
     }
 
+    
     private void initialize() {
         frame = new JFrame("Weight Loss Calculator");
         frame.setBounds(100, 100, 400, 200);
