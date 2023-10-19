@@ -39,7 +39,6 @@ public class ReadWriteController {
         Connection conn = null;  
         try {  
             // db parameters  
-            //String url = "jdbc:sqlite:C:/Users/Ben Michailov/Database/sqlite-tools-win32-x86-3420000/test_database";  
         	String url = "jdbc:sqlite:test_database";
             // create a connection to the database  
             conn = DriverManager.getConnection(url);  
