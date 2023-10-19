@@ -86,6 +86,46 @@ public class ReadWriteController {
         }
 
     }
+    
+    public HealthInfo retrieveDataBetweenDates(Date startDate, Date endDate) throws Exception{
+    	
+
+    	long startDateInMS = startDate.getTime();
+    	long endDateInMS = endDate.getTime();
+    	
+    	if (endDateInMS < startDateInMS) {
+    		throw new Exception();
+    	}
+
+    	String sql="SELECT SUM(caloriesConsumed), SUM(protein), SUM(fat), SUM(carbohydrates), SUM(sugar), SUM(caloriesBurned) FROM healthInfoLog WHERE date>='"+startDateInMS+"' AND date<='"+endDateInMS+"'";
+    	
+    	HealthInfo output = new HealthInfo();
+    	
+    	try (Connection conn = this.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+               // loop through the result set
+    		 while(rs.next()) {
+              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
+        		output.setCaloriesConsumed(rs.getInt("SUM(caloriesConsumed)"));
+               	output.setProtein(rs.getDouble("SUM(protein)"));
+            	output.setFat(rs.getDouble("SUM(fat)"));
+            	output.setCarbohydrates(rs.getDouble("SUM(carbohydrates)"));
+            	output.setSugar(rs.getDouble("SUM(sugar)"));
+            	output.setCaloriesBurned(rs.getInt("SUM(caloriesBurned)"));
+    		 } 
+               
+               
+               conn.close();
+           } catch (SQLException e) {
+               System.out.println(e.getMessage());
+           }
+    	//System.out.println(output);
+    	
+    	return output;
+    	
+    }
    
     
     public String debugDumpDatabase(){
@@ -283,15 +323,26 @@ public class ReadWriteController {
     
    
   
-    public static void main(String[] args) throws IOException, InterruptedException, Exception {  
-        /*ReadWriteController test = new ReadWriteController();
-        test.connect();  
+    /*public static void main(String[] args) throws IOException, InterruptedException, Exception {  
+        ReadWriteController test = new ReadWriteController();
+        /*test.connect();  
         test.createNewTable();
         Date d1 = new Date(123,9,16); 
         test.storeMeal(MealType.SNACK,5,100,d1);
         test.debugDumpDatabase();
         
         //test.insert()
-        System.out.println(d1);*/
-    }  
+        System.out.println(d1);
+    	
+    	Date d1 = new Date(123,9,16); 
+    	Date d2 = new Date(0,0,0);
+        //test.storeMeal(MealType.SNACK,5,100,d1);
+        HealthInfo test2 = test.retrieveDataBetweenDates(d2, d1);
+        
+        System.out.println(test2);
+        
+        
+    	
+    	
+    }  */
 }  
