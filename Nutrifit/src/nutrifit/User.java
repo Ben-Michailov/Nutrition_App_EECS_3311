@@ -7,8 +7,8 @@ import java.util.Date;
 public class User {
     private String name;
     private int age;
-    private Date DOB;
-    SimpleDateFormat formatter;
+    private String DOB;
+    
     private double height;
     private double weight;
     private String sex;
@@ -24,12 +24,12 @@ public class User {
     public User(String name, String age, String DOB, String height, String weight, String sex) throws ParseException {
         this.name = name;
         this.age = Integer.parseInt(age);
-        this.DOB = new SimpleDateFormat("dd/MM/yyyy").parse(DOB);
+        this.DOB = DOB;
         this.height = Double. parseDouble(height);
         this.weight = Double. parseDouble(weight);
         this.sex = sex;
     }
-    public User(String name, int age, Date DOB, double height, double weight, String sex) {
+    public User(String name, int age, String DOB, double height, double weight, String sex) {
         this.name = name;
         this.age = age;
         this.DOB = DOB;
@@ -49,10 +49,19 @@ public class User {
     public User(String[] sl) throws ParseException {
         this.name = sl[0];
         this.age = Integer.parseInt(sl[1]);
-        this.DOB = formatter.parse(sl[2]);
+        this.DOB = sl[2];
         this.height = Double.parseDouble(sl[3]);
         this.weight = Double.parseDouble(sl[4]);
         this.sex = sl[5];
+    }
+    // Mifflin-St Jeor Equation: 
+    public double BMRcalculator() {
+    	
+    	if(this.sex.equals("M")) {
+    		return 10*this.weight + 6.25*this.height - (double)5*this.age + 5;
+    	}else {
+    		return 10*this.weight + 6.25*this.height - (double)5*this.age -161;
+    	}
     }
 
     @Override
@@ -76,11 +85,11 @@ public class User {
         this.age = age;
     }
 
-    public Date getDOB() {
+    public String getDOB() {
         return DOB;
     }
 
-    public void setDOB(Date DOB) {
+    public void setDOB(String DOB) {
         this.DOB = DOB;
     }
 
