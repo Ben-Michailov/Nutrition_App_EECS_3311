@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.ParseException;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -13,8 +14,12 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton back;
         private JButton logMeal;
         private JTextArea tout;
+        private JTextArea tout2;
         private JButton logExercise;
         private JButton visualizeData;
+        private JButton bmr;
+        Datebase datebase = new Datebase();
+        String[] sl = datebase.readUser();
         
         public HomePage() throws IOException {
 
@@ -26,8 +31,7 @@ public class HomePage extends JFrame implements ActionListener {
             Container c = getContentPane();
             c.setLayout(null);
 
-            Datebase datebase = new Datebase();
-            String[] sl = datebase.readUser();
+            
             String s1 = "";
             tout = new JTextArea();
             tout.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -75,6 +79,23 @@ public class HomePage extends JFrame implements ActionListener {
             visualizeData.setLocation(150, 400);
             visualizeData.addActionListener(this);
             c.add(visualizeData);
+            
+            bmr = new JButton("BMR");
+            bmr.setFont(new Font("Arial", Font.PLAIN, 15));
+            bmr.setSize(100, 20);
+            bmr.setLocation(150, 300);
+            bmr.addActionListener(this);
+            c.add(bmr);
+            
+            tout2 = new JTextArea();
+            tout2.setFont(new Font("Arial", Font.PLAIN, 15));
+            tout2.setSize(150, 20);
+            tout2.setLocation(270, 300);
+            tout2.setLineWrap(true);
+            tout2.setEditable(false);
+            c.add(tout2);
+            
+          
 
             setVisible(true);
     }
@@ -108,6 +129,16 @@ public class HomePage extends JFrame implements ActionListener {
                 try {
 					new DataVisualizationPage();
 				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            else if(e.getSource() == bmr) {
+            	try {
+					User user = new User(sl);
+					tout2.setText(Double.toString(user.BMRcalculator()));
+					
+				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
