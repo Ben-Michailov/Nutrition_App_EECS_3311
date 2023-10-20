@@ -1,20 +1,9 @@
 package nutrifit;
 
 import java.sql.Statement;
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+
 import java.sql.Connection;  
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

@@ -14,6 +14,7 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton logMeal;
         private JTextArea tout;
         private JButton logExercise;
+        private JButton visualizeData;
         
         public HomePage() throws IOException {
 
@@ -67,6 +68,13 @@ public class HomePage extends JFrame implements ActionListener {
             logExercise.setLocation(270, 500);
             logExercise.addActionListener(this);
             c.add(logExercise);
+            
+            visualizeData = new JButton("visualize data");
+            visualizeData.setFont(new Font("Arial", Font.PLAIN, 15));
+            visualizeData.setSize(150, 20);
+            visualizeData.setLocation(150, 400);
+            visualizeData.addActionListener(this);
+            c.add(visualizeData);
 
             setVisible(true);
     }
@@ -90,6 +98,15 @@ public class HomePage extends JFrame implements ActionListener {
             	setVisible(false);
                 try {
 					new ExerciseLoggingPage();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            else if(e.getSource() == visualizeData){
+            	setVisible(false);
+                try {
+					new DataVisualizationPage();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
