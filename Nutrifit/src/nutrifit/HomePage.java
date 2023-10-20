@@ -13,6 +13,8 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton back;
         private JButton logMeal;
         private JTextArea tout;
+        private JButton logExercise;
+        
         public HomePage() throws IOException {
 
             setTitle("Home Page");
@@ -55,9 +57,16 @@ public class HomePage extends JFrame implements ActionListener {
             logMeal = new JButton("log meal");
             logMeal.setFont(new Font("Arial", Font.PLAIN, 15));
             logMeal.setSize(100, 20);
-            logMeal.setLocation(390, 450);
+            logMeal.setLocation(150, 500);
             logMeal.addActionListener(this);
             c.add(logMeal);
+            
+            logExercise = new JButton("log exercise");
+            logExercise.setFont(new Font("Arial", Font.PLAIN, 15));
+            logExercise.setSize(150, 20);
+            logExercise.setLocation(270, 500);
+            logExercise.addActionListener(this);
+            c.add(logExercise);
 
             setVisible(true);
     }
@@ -72,6 +81,15 @@ public class HomePage extends JFrame implements ActionListener {
             	setVisible(false);
                 try {
 					new MealLoggingPage();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            else if(e.getSource() == logExercise){
+            	setVisible(false);
+                try {
+					new ExerciseLoggingPage();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

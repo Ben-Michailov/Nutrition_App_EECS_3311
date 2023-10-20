@@ -219,6 +219,15 @@ public class ReadWriteController {
     	
     }
     
+    public void storeExercise(int caloriesBurned, Date date) throws Exception {
+    	
+        
+        
+        storeIntoHealthLogTable(date,'n',0,0.0,0.0,0.0,0.0, caloriesBurned);
+        
+    }
+    
+    
     public void storeMeal(MealType mealType, int foodID, int amount, Date date) throws Exception {
     	
     	char mealChar='n';

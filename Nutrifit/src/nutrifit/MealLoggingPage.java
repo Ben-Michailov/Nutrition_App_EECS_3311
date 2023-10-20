@@ -157,9 +157,9 @@ public class MealLoggingPage extends JFrame implements ActionListener {
    }
 
 		
-		public static void main(String[] args) throws IOException, InterruptedException, Exception {  
+		/*public static void main(String[] args) throws IOException, InterruptedException, Exception {  
 			MealLoggingPage test = new MealLoggingPage();
-	    }  
+	    } */ 
 
 
 		
