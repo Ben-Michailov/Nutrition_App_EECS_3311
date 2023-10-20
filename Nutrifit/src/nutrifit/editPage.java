@@ -210,6 +210,7 @@ public class editPage  extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	
         User user;
         if (e.getSource() == sub) {
 
@@ -226,14 +227,18 @@ public class editPage  extends JFrame implements ActionListener {
                         + "/" + (String)year.getSelectedItem();
 
 
-
+                
             try {
-                user = new User(tname.getText(),tage.getText(),dob,theight.getText(),tweight.getText(),sex);
-                Datebase usertable = new Datebase();
-                usertable.createNew(user);
-                tout.setText(user.toString());
-                tout.setEditable(false);
-                res.setText("edit Successfully..");
+            	if(tname.getText().isEmpty() || tage.getText().isEmpty() ||dob.isEmpty() || theight.getText().isEmpty() ||tweight.getText().isEmpty() ||sex.isEmpty()) {
+            		 res.setText("input can not be null");
+                }else {
+                	user = new User(tname.getText(),tage.getText(),dob,theight.getText(),tweight.getText(),sex);
+                	Datebase usertable = new Datebase();
+                	usertable.createNew(user);
+                	tout.setText(user.toString());
+                	tout.setEditable(false);
+                	res.setText("edit Successfully..");
+                }
             } catch (ParseException | IOException ex) {
                 ex.printStackTrace();
             }
