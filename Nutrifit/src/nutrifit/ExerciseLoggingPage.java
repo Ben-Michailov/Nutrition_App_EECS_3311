@@ -29,7 +29,7 @@ public class ExerciseLoggingPage extends JFrame implements ActionListener {
     private JTextField tduration; 
     private JLabel duration;
     
-    ReadWriteController dataStorage = new ReadWriteController();
+    ReadWriteController dataStorage = ReadWriteController.getInstance();
 	
     //dataStorage.createNewTable();
     

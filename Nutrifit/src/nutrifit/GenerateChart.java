@@ -14,7 +14,7 @@ import org.jfree.data.general.DefaultPieDataset;
 public class GenerateChart {
 	
 	public JFreeChart generateChart(Date startDate, Date endDate) throws Exception {
-		ReadWriteController controller = new ReadWriteController();
+		ReadWriteController controller = ReadWriteController.getInstance();
 		HealthInfo info = controller.retrieveDataBetweenDates(startDate, endDate);
 		System.out.println(info.getProtein());
 		System.out.println(startDate +""+ endDate);

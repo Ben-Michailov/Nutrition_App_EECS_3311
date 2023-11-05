@@ -34,7 +34,7 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
    // private JLabel successOrFail;
 
     
-    ReadWriteController dataStorage = new ReadWriteController();
+    ReadWriteController dataStorage = ReadWriteController.getInstance();
 	
     
     

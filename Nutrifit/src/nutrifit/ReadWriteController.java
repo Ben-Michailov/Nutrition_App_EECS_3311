@@ -12,9 +12,39 @@ import java.sql.SQLException;
 import java.sql.Date;
    
 public class ReadWriteController {  
-     /** 
-     * Connect to a sample database 
-     */  
+     
+	//Connection conn = null;
+	
+	private static ReadWriteController instance = null;
+
+    private ReadWriteController(){
+    	/* try {  
+             // db parameters  
+         	String url = "jdbc:sqlite:test_database";
+             // create a connection to the database  
+             conn = DriverManager.getConnection(url);  
+               
+             System.out.println("Connection to SQLite has been established.");  
+               
+    	 	} catch (SQLException e) {  
+             System.out.println(e.getMessage());  
+    	 	} /*finally {  
+             try {  
+                 if (conn != null) {  
+                     conn.close();  
+                 }  
+             } catch (SQLException ex) {  
+                 System.out.println(ex.getMessage());  
+             }  
+         }*/
+    	}
+
+    public static ReadWriteController getInstance() {
+        if (instance == null) {
+            instance = new ReadWriteController();
+        }
+        return instance;
+    }
 	
 	
 	public enum MealType {

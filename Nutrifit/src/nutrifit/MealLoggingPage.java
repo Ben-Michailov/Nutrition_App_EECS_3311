@@ -29,7 +29,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     private JTextField year;
     private JLabel successOrFail;
     
-    ReadWriteController dataStorage = new ReadWriteController();
+    ReadWriteController dataStorage = ReadWriteController.getInstance();
 	
     //dataStorage.createNewTable();
     

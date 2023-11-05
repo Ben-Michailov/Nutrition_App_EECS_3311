@@ -9,7 +9,7 @@ public class WeightLossCalculator {
     ReadWriteController controller;
 
     public WeightLossCalculator(User user) {
-        ReadWriteController controller = new ReadWriteController();
+        ReadWriteController controller = ReadWriteController.getInstance();
         this.user= user;
 
     }
