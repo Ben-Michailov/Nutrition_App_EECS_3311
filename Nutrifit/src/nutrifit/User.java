@@ -46,7 +46,7 @@ public class User {
         this.weight = user.getWeight();
         this.sex = user.getSex();
     }
-    public User(String[] sl) throws ParseException {
+   /* public User(String[] sl) throws ParseException {
         this.name = sl[0];
         this.age = Integer.parseInt(sl[1]);
         this.DOB = sl[2];
@@ -54,6 +54,7 @@ public class User {
         this.weight = Double.parseDouble(sl[4]);
         this.sex = sl[5];
     }
+    */
     // Mifflin-St Jeor Equation: 
     public double BMRcalculator() {
     	
@@ -66,7 +67,7 @@ public class User {
 
     @Override
     public String toString() {
-        return name + "," + age + "," + DOB + "," + height + "," + weight + "," + sex;
+        return name + ",\n" + age + ",\n" + DOB + ",\n" + height + ",\n" + weight + ",\n" + sex;
     }
 
     public String getName() {
@@ -89,8 +90,8 @@ public class User {
         return DOB;
     }
 
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
+    public void setDOB(String date) {
+        this.DOB = date;
     }
 
     public double getHeight() {
