@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;  
 import java.sql.Date;
    
-public class ReadWriteController {  
+public class ReadWriteController extends Datebase {  
      
 	//Connection conn = null;
 	
@@ -54,31 +54,9 @@ public class ReadWriteController {
 		  SNACK
 	}
 	
-    public  Connection connect() {  
-        Connection conn = null;  
-        try {  
-            // db parameters  
-        	String url = "jdbc:sqlite:test_database";
-            // create a connection to the database  
-            conn = DriverManager.getConnection(url);  
-              
-            System.out.println("Connection to SQLite has been established.");  
-              
-        } catch (SQLException e) {  
-            System.out.println(e.getMessage());  
-        } /*finally {  
-            try {  
-                if (conn != null) {  
-                    conn.close();  
-                }  
-            } catch (SQLException ex) {  
-                System.out.println(ex.getMessage());  
-            }  
-        }  */
-        
-        return conn;
-    }  
-    
+
+	
+    @Override
     public void createNewTable() {
 
         
@@ -94,7 +72,7 @@ public class ReadWriteController {
                 + " caloriesBurned int\n"
                 + ");";
         
-        try (Connection conn = this.connect();
+        try (Connection conn = super.connect();
                 Statement stmt = conn.createStatement()) {
         	System.out.println("inside try");
             // create a new table
@@ -120,7 +98,7 @@ public class ReadWriteController {
     	
     	HealthInfo output = new HealthInfo();
     	
-    	try (Connection conn = this.connect();
+    	try (Connection conn = super.connect();
                 Statement stmt  = conn.createStatement();
                 ResultSet rs    = stmt.executeQuery(sql)){
                
@@ -150,7 +128,7 @@ public class ReadWriteController {
     public String debugDumpDatabase(){
         String sql = "SELECT * FROM healthInfoLog";
         String output = "";
-        try (Connection conn = this.connect();
+        try (Connection conn = super.connect();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
             
@@ -179,7 +157,7 @@ public class ReadWriteController {
     
     private boolean doesMealExist(char meal, long date) {
     	String sql = "SELECT COUNT(*) FROM HealthInfoLog WHERE date = "+date+" AND meal ='"+meal+"'"; 
-    	 try (Connection conn = this.connect();
+    	 try (Connection conn = super.connect();
                  Statement stmt  = conn.createStatement();
                  ResultSet rs    = stmt.executeQuery(sql)){
                 
@@ -203,7 +181,7 @@ public class ReadWriteController {
     	//String[] output = new String[5];
     	int i = 0;
     	String sql = "SELECT FoodDescription FROM foodname"; 
-    	try (Connection conn = this.connect();
+    	try (Connection conn = super.connect();
                 Statement stmt  = conn.createStatement();
                 ResultSet rs    = stmt.executeQuery(sql)){
                
@@ -224,7 +202,7 @@ public class ReadWriteController {
     public int IDOfAGivenFood(String foodName) {
     	int output = 2;
     	String sql = "SELECT FoodID FROM foodname WHERE FoodDescription='"+foodName+"'"; 
-    	try (Connection conn = this.connect();
+    	try (Connection conn = super.connect();
                 Statement stmt  = conn.createStatement();
                 ResultSet rs    = stmt.executeQuery(sql)){
                
@@ -287,7 +265,7 @@ public class ReadWriteController {
     	
     	int i =0;
     	
-        try (Connection conn = this.connect();
+        try (Connection conn = super.connect();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
             
@@ -332,7 +310,7 @@ public class ReadWriteController {
     private void storeIntoHealthLogTable(Date date, char meal, int caloriesConsumed, double fat, double protein, double carbohydrates, double sugar, int caloriesBurned) {
         String sql = "INSERT INTO healthInfoLog(date, meal, caloriesConsumed, fat, protein, carbohydrates, sugar, caloriesBurned) VALUES(?,?,?,?,?,?,?,?)";
 
-        try (Connection conn = this.connect();
+        try (Connection conn = super.connect();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
            // pstmt.setInt(0,id);
             pstmt.setDate(1, date);
@@ -348,7 +326,18 @@ public class ReadWriteController {
             System.out.println(e.getMessage());
         }
     }
-    
+	
+    	@Override
+	public <T> T readTable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeTable() {
+		// TODO Auto-generated method stub
+		
+	}
    
   
     /*public static void main(String[] args) throws IOException, InterruptedException, Exception {  
