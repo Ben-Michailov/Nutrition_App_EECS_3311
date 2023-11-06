@@ -18,8 +18,7 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton logExercise;
         private JButton visualizeData;
         private JButton bmr;
-        Datebase datebase = new Datebase();
-        String[] sl = datebase.readUser();
+     
         
         public HomePage() throws IOException {
 
@@ -32,7 +31,7 @@ public class HomePage extends JFrame implements ActionListener {
             c.setLayout(null);
 
             
-            String s1 = "";
+            
             tout = new JTextArea();
             tout.setFont(new Font("Arial", Font.PLAIN, 15));
             tout.setSize(300, 400);
@@ -40,10 +39,9 @@ public class HomePage extends JFrame implements ActionListener {
             tout.setLineWrap(true);
             tout.setEditable(false);
             c.add(tout);
-            for (String s : sl) {
-                s1=s1 + s +"\n";
-            }
-            tout.setText(s1);
+            UserProfile usertable = new UserProfile();
+            
+            tout.setText(usertable.readTable().toString());
 
             back = new JButton("back");
             back.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -134,14 +132,9 @@ public class HomePage extends JFrame implements ActionListener {
 				}
             }
             else if(e.getSource() == bmr) {
-            	try {
-					User user = new User(sl);
-					tout2.setText(Double.toString(user.BMRcalculator()));
-					
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+            	UserProfile usertable = new UserProfile();
+		User user = usertable.readTable();
+		tout2.setText(Double.toString(user.BMRcalculator()));
             }
             else{
                 setVisible(false);
