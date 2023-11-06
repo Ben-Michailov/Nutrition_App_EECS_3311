@@ -222,26 +222,49 @@ public class editPage  extends JFrame implements ActionListener {
                 }else {
                     sex = "F";
                 }
+               /* String strdate = ""+ (String)date.getSelectedItem()
+                + "/" + (String)month.getSelectedItem()
+                + "/" + (String)year.getSelectedItem();
+                
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
+                java.util.Date date = null;
+				try {
+					date = sdf.parse(strdate);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                
+                java.sql.Date sqlDate = new Date(date.getTime());
+                */
                 String dob= ""+ (String)date.getSelectedItem()
-                        + "/" + (String)month.getSelectedItem()
-                        + "/" + (String)year.getSelectedItem();
-
-
+                + "/" + (String)month.getSelectedItem()
+                + "/" + (String)year.getSelectedItem();
                 
             try {
             	if(tname.getText().isEmpty() || tage.getText().isEmpty() ||dob.isEmpty() || theight.getText().isEmpty() ||tweight.getText().isEmpty() ||sex.isEmpty()) {
             		 res.setText("input can not be null");
                 }else {
+                	
                 	user = new User(tname.getText(),tage.getText(),dob,theight.getText(),tweight.getText(),sex);
-                	Datebase usertable = new Datebase();
-                	usertable.createNew(user);
+                	UserProfile usertable = new UserProfile();
+                	if(usertable.tableExists("user_profile")) {
+                		usertable.editTable(user);
+                	}else {
+                		usertable.createNewTable();
+                		usertable.insertTable(user);
+                	}
+                	
                 	tout.setText(user.toString());
                 	tout.setEditable(false);
                 	res.setText("edit Successfully..");
                 }
-            } catch (ParseException | IOException ex) {
+            } catch (ParseException ex) {
                 ex.printStackTrace();
-            }
+            } catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 
 
