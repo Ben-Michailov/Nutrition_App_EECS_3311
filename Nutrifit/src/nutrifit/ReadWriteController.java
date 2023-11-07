@@ -46,14 +46,6 @@ public class ReadWriteController extends Datebase {
         return instance;
     }
 	
-	
-	public enum MealType {
-		  BREAKFAST,
-		  LUNCH,
-		  DINNER,
-		  SNACK
-	}
-	
 
 	
     @Override
@@ -155,7 +147,10 @@ public class ReadWriteController extends Datebase {
     
     
     
-    private boolean doesMealExist(char meal, long date) {
+    public boolean doesMealExist(char meal, long date) {
+    	if (meal == 's' || meal == 'n') {
+    		return false;
+    	}
     	String sql = "SELECT COUNT(*) FROM HealthInfoLog WHERE date = "+date+" AND meal ='"+meal+"'"; 
     	 try (Connection conn = super.connect();
                  Statement stmt  = conn.createStatement();
@@ -225,21 +220,7 @@ public class ReadWriteController extends Datebase {
     }
     
     
-    public void storeMeal(MealType mealType, int foodID, int amount, Date date) throws Exception {
-    	
-    	char mealChar='n';
-        if (mealType == MealType.BREAKFAST) {
-        	mealChar = 'b';
-        }
-        else if (mealType == MealType.LUNCH) {
-        	mealChar = 'l';
-        }
-        if (mealType == MealType.DINNER) {
-        	mealChar = 'd';
-        }
-        if (mealType == MealType.SNACK) {
-        	mealChar = 's';
-        }
+    public void storeMeal(char mealChar, int foodID, int amount, Date date) throws Exception {
         
         
         long dateInMS = date.getTime();
@@ -247,10 +228,10 @@ public class ReadWriteController extends Datebase {
         
         
         
-        if (mealChar != 's' && mealChar != 'n' && doesMealExist(mealChar, dateInMS)==true ) {
+        /*if (mealChar != 's' && mealChar != 'n' && doesMealExist(mealChar, dateInMS)==true ) {
 
         	throw new Exception();
-        };
+        };*/
     	
     	
     	String sql = "SELECT NutrientValue FROM nutrientamount WHERE FoodID="+foodID+" AND (NutrientID=203 OR NutrientID=208 OR NutrientID=204 OR NutrientID = 205 OR NutrientID= 269);";
