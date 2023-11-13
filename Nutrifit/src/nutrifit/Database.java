@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class Datebase {
+public abstract class Database {
 	/* new connector for MySQL
 	public  Connection connect() {  
  
