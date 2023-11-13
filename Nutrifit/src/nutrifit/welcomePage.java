@@ -12,8 +12,8 @@ public class welcomePage extends JFrame implements ActionListener {
 	private JLabel nutrifit;
 	private JLabel teamKilo;
 	private JButton createnew;
-    private JButton login;
-    public welcomePage() {
+    	private JButton login;
+   	public welcomePage() {
 
         setTitle("Welcome Page");
         setBounds(300, 90, 900, 600);
@@ -59,10 +59,16 @@ public class welcomePage extends JFrame implements ActionListener {
             setVisible(false);
             new editPage();
         }else{
-            setVisible(false);
-            try {
-                new HomePage();
-            } catch (IOException ex) {
+            
+           try {
+            	Datebase user = new UserProfile();
+            	if(user.tableExists("user_profile")) {
+            		setVisible(false);
+            		new HomePage();
+            	}else {
+            		JOptionPane.showMessageDialog(this, "there is no existed user-profile, please make a new one!");
+            	}
+            } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
             }
         }
