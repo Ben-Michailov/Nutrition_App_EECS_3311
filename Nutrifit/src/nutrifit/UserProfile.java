@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;  
 import java.sql.Date;
 
-public class UserProfile extends Datebase{
+public class UserProfile extends Database{
 	//static final String usertable = "SELECT id, name, age , DOB , height, weight,sex FROM user_profile";
 	/*private String name;
     private int age;
