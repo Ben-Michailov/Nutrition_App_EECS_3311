@@ -7,7 +7,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Datebase {
-	
+	/* new connector for MySQL
+	public  Connection connect() {  
+ 
+		// please modify your own source
+  
+		Connection conn = null; 
+		String databaseName = "3311_project";
+		String url = "jdbc:mysql://localhost:3306/" + databaseName;
+		String username = "root";
+		String password = "123456";
+		
+	        try {  
+	            
+	        	Class.forName("com.mysql.cj.jdbc.Driver");  
+	        	conn=DriverManager.getConnection(url,username,password);  
+	              
+	            System.out.println("Connection to SQLite has been established.");  
+	        }catch(Exception e){ System.out.println(e);}  
+	    
+	        return conn;
+	        
+	    }
+ */
 	 
 	public  Connection connect() {  
 		Connection conn = null;  
