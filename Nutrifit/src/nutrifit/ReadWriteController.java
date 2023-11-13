@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;  
 import java.sql.Date;
    
-public class ReadWriteController extends Datebase {  
+public class ReadWriteController extends Database {  
      
 	//Connection conn = null;
 	
