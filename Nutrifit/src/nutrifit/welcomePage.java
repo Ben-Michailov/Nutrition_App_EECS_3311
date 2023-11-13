@@ -61,7 +61,7 @@ public class welcomePage extends JFrame implements ActionListener {
         }else{
             
            try {
-            	Datebase user = new UserProfile();
+            	Database user = new UserProfile();
             	if(user.tableExists("user_profile")) {
             		setVisible(false);
             		new HomePage();
