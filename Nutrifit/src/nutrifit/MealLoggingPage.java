@@ -38,6 +38,9 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     private JButton submitMeal;
     private boolean mealExists = true;
     
+    MealLoggingState state;
+    
+    
     private class IngredientToBeAdded{
     	private char meal;
     	private int foodID;
@@ -79,6 +82,10 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     }
     
     private ArrayList<IngredientToBeAdded> ingredientsToBeAdded = new ArrayList<IngredientToBeAdded>();
+    
+    public void clearFood() {
+    	ingredientsToBeAdded.clear();
+    }
     
     ReadWriteController dataStorage = ReadWriteController.getInstance();
 	
@@ -229,7 +236,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         sub.setSize(150, 20);
         sub.setLocation(100, 500);
         sub.addActionListener(this);
-        sub.setEnabled(false);
+        //sub.setEnabled(false);
         c.add(sub);
         
         back = new JButton("Back");
@@ -244,7 +251,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         addIngredient.setSize(200, 40);
         addIngredient.setLocation(100, 450);
         addIngredient.addActionListener(this);
-        addIngredient.setEnabled(false);
+        //addIngredient.setEnabled(false);
         c.add(addIngredient);
         
         successOrFail = new JLabel("");
@@ -254,11 +261,105 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         c.add(successOrFail);
            
           
-        tfood.setEnabled(false);
+        /*tfood.setEnabled(false);
     	tamount.setEditable(false);    
-    	changeDate.setEnabled(false);
+    	changeDate.setEnabled(false);*/
+        
+        state = new NoDateNoFoodState(this);
+        state.handle();
            
    }
+    
+    /*private JButton back;
+	private JButton addIngredient;*/
+    
+    public void addIngredientState(boolean eOrD) {
+    	addIngredient.setEnabled(eOrD);
+
+    }
+    
+    /*
+	private JButton changeDate;*/
+  
+    public void changeDateState(boolean eOrD) {
+
+    	changeDate.setEnabled(eOrD);
+    }
+    
+    
+    
+/*	private JList ingredients;*/
+    
+    /*
+	private DefaultListModel ingredientsModel;
+	private JLabel mealExistsSuccessOrFail;
+    private JTextArea tout;
+    private JComboBox tfood;
+    */
+    
+    public void foodComboBoxState(boolean eOrD) {
+
+    	tfood.setEnabled(eOrD);
+    	
+    }
+    
+    /*
+    
+    private JLabel food;
+    private JTextField tamount;
+    */
+    
+    public void amountTextFieldState(boolean eOrD) {
+
+    	tamount.setEditable(eOrD);
+    	
+    }
+    
+    
+    /*
+    private JLabel amount;
+    private JComboBox meals;
+    */
+    public void typeOfMealComboBoxState(boolean eOrD) {
+
+    	meals.setEnabled(eOrD);
+   
+    }
+    
+    
+    /*
+    private JLabel meal;
+    private JButton sub;
+    */
+    
+    public void submitButtonState(boolean eOrD) {
+
+    	sub.setEnabled(eOrD);
+    }
+    
+    /*
+    private JLabel date;
+    private JTextField day;
+    private JTextField month;
+    private JTextField year;
+    */
+    public void enterDateState(boolean eOrD) {
+
+		day.setEditable(eOrD);
+		month.setEditable(eOrD);
+		year.setEditable(eOrD);
+    	
+    }
+    /*
+    private JLabel successOrFail;
+    private int i =0;
+    private JButton submitMeal;*/
+    
+    public void setDateAndMealButtonState(boolean eOrD) {
+
+    	submitMeal.setEnabled(eOrD);
+    	
+    }
 
 		
 		/*public static void main(String[] args) throws IOException, InterruptedException, Exception {  
@@ -314,9 +415,14 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	if (mealExists) {
             		mealExistsSuccessOrFail.setText("ERROR: Meal Already Entered");
             	}
-            	else if (!mealExists) {
+            	else {
+            		
             		mealExistsSuccessOrFail.setText("Please Enter Ingredients");
-            		submitMeal.setEnabled(false);
+            		
+            		state = state.switchState(MealLoggingEvent.SETDATEANDMEAL);
+            		state.handle();
+            		
+            		/*submitMeal.setEnabled(false);
                 	//sub.setEnabled(true);
                 	addIngredient.setEnabled(true);
                 	day.setEditable(false);
@@ -328,12 +434,12 @@ public class MealLoggingPage extends JFrame implements ActionListener {
                 	changeDate.setEnabled(true);
                 	if (ingredientsToBeAdded.size()!= 0) {
                 		sub.setEnabled(true);
-                	}
+                	}*/
             	}
             	
             }
             else if (e.getSource()== changeDate) {
-            	submitMeal.setEnabled(true);
+            	/*submitMeal.setEnabled(true);
             	sub.setEnabled(false);
             	meals.setEnabled(true);
             	day.setEditable(true);
@@ -342,9 +448,12 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	tfood.setEnabled(false);
             	tamount.setEditable(false);
             	addIngredient.setEnabled(false);
-            	changeDate.setEnabled(false);
+            	changeDate.setEnabled(false);*/
             	
             	mealExistsSuccessOrFail.setText("Please Enter Another Date");
+            	
+            	state = state.switchState(MealLoggingEvent.CHANGEIT);
+        		state.handle();
             }
             else if(e.getSource() == addIngredient){
             	
@@ -379,14 +488,17 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	IngredientToBeAdded a1 = new IngredientToBeAdded(selectedMeal, foodID, amountEaten, d1);
       
             	ingredientsToBeAdded.add(a1);
-            	sub.setEnabled(true);
+            	
+            	state = state.switchState(MealLoggingEvent.ADDINGREDIENT);
+        		state.handle();
+            	//sub.setEnabled(true);
             }
             
             else if (e.getSource() == sub) {
-            		
-            	//System.out.println(tfood.getText()+" "+(String)meals.getSelectedItem() +" " + tamount.getText());
+            	
             	
             	dataStorage.createNewTable();
+            	//System.out.println(tfood.getText()+" "+(String)meals.getSelectedItem() +" " + tamount.getText());
             	
             	for (int j = 0; j<ingredientsToBeAdded.size(); j++) {
             		IngredientToBeAdded a1 = ingredientsToBeAdded.get(j);
@@ -400,13 +512,14 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     				}
             	}
             	
-            	ingredientsToBeAdded.clear();
+            	//clearFood();
+            	//ingredientsToBeAdded.clear();
             	i=0;
 
             	String output = dataStorage.debugDumpDatabase();
             	tout.setText(output);
             	
-            	submitMeal.setEnabled(true);
+            	/*submitMeal.setEnabled(true);
             	sub.setEnabled(false);
             	meals.setEnabled(true);
             	day.setEditable(true);
@@ -415,9 +528,14 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	tfood.setEnabled(false);
             	tamount.setEditable(false);
             	addIngredient.setEnabled(false);
-            	changeDate.setEnabled(false);
+            	changeDate.setEnabled(false);*/
+            	
+            	
             	
             	mealExistsSuccessOrFail.setText("Please Enter Another Date");
+            	
+            	state = state.switchState(MealLoggingEvent.SUBMIT);
+        		state.handle();
             	
             	ingredientsModel.clear();
         }
