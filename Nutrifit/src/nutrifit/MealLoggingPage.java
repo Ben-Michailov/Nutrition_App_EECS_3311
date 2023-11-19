@@ -386,6 +386,8 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             		
             	//System.out.println(tfood.getText()+" "+(String)meals.getSelectedItem() +" " + tamount.getText());
             	
+            	dataStorage.createNewTable();
+            	
             	for (int j = 0; j<ingredientsToBeAdded.size(); j++) {
             		IngredientToBeAdded a1 = ingredientsToBeAdded.get(j);
             		try {

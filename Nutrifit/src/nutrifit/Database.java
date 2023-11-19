@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Database {
-	/* new connector for MySQL
+	/* new connector for MySQL*/
 	public  Connection connect() {  
  
 		// please modify your own source
@@ -16,7 +16,7 @@ public abstract class Database {
 		String databaseName = "3311_project";
 		String url = "jdbc:mysql://localhost:3306/" + databaseName;
 		String username = "root";
-		String password = "123456";
+		String password = "password";
 		
 	        try {  
 	            
@@ -29,9 +29,8 @@ public abstract class Database {
 	        return conn;
 	        
 	    }
- */
 	 
-	public  Connection connect() {  
+	/*public  Connection connect() {  
 		Connection conn = null;  
 	        try {  
 	            // db parameters  
@@ -51,10 +50,10 @@ public abstract class Database {
 	            } catch (SQLException ex) {  
 	                System.out.println(ex.getMessage());  
 	            }  
-	        }  */
+	        }  
 	        
 	        return conn;
-	    }  
+	    }  */
 	
 	boolean tableExists(String tableName) throws SQLException {
 		boolean found = false;

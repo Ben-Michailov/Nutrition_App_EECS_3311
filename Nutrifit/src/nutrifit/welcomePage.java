@@ -68,7 +68,7 @@ public class welcomePage extends JFrame implements ActionListener {
             	}else {
             		JOptionPane.showMessageDialog(this, "there is no existed user-profile, please make a new one!");
             	}
-            } catch (IOException | SQLException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
