@@ -1,12 +1,23 @@
 package nutrifit;
 
 import javax.swing.*;
+
+import nutrifit.patterns.Command;
+import nutrifit.patterns.CreateNewCommand;
+import nutrifit.patterns.EditCommand;
+import nutrifit.patterns.InsertCommand;
+import nutrifit.patterns.User;
+import nutrifit.patterns.UserBuilder;
+import nutrifit.patterns.UserCommandInvoker;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class editPage  extends JFrame implements ActionListener {
 
@@ -56,6 +67,12 @@ public class editPage  extends JFrame implements ActionListener {
             "2019" };
     private JPanel panel1;
 
+    
+    /**
+     * edit Page frame
+     *
+     */
+    
     public editPage(){
         setTitle("Edit Page");
         setBounds(300, 90, 900, 600);
@@ -208,11 +225,19 @@ public class editPage  extends JFrame implements ActionListener {
 
         setVisible(true);
     }
-
+  
+    /**
+     * button listener
+     *
+     */
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-    	
-        User user;
+    	User user;
+    	/**
+         * update user profile, if success then show success
+         * 						else error popped
+         */
         if (e.getSource() == sub) {
 
 
@@ -223,21 +248,7 @@ public class editPage  extends JFrame implements ActionListener {
                 }else {
                     sex = "F";
                 }
-               /* String strdate = ""+ (String)date.getSelectedItem()
-                + "/" + (String)month.getSelectedItem()
-                + "/" + (String)year.getSelectedItem();
-                
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
-                java.util.Date date = null;
-				try {
-					date = sdf.parse(strdate);
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                
-                java.sql.Date sqlDate = new Date(date.getTime());
-                */
+             
                 String dob= ""+ (String)date.getSelectedItem()
                 + "/" + (String)month.getSelectedItem()
                 + "/" + (String)year.getSelectedItem();
@@ -246,22 +257,39 @@ public class editPage  extends JFrame implements ActionListener {
             	if(tname.getText().isEmpty() || tage.getText().isEmpty() ||dob.isEmpty() || theight.getText().isEmpty() ||tweight.getText().isEmpty() ||sex.isEmpty()) {
             		 res.setText("input can not be null");
                 }else {
+                	UserBuilder userbuilder = new UserBuilder();
+                	userbuilder.setName(tname.getText());
+                	userbuilder.setAge(tage.getText());
+                	userbuilder.setDOB(dob);
+                	userbuilder.setHeight(theight.getText());
+                	userbuilder.setWeight(tweight.getText());
+                	userbuilder.setSex(sex);
                 	
-                	user = new User(tname.getText(),tage.getText(),dob,theight.getText(),tweight.getText(),sex);
+                	user = userbuilder.build();
                 	UserProfile usertable = new UserProfile();
                 	if(usertable.tableExists("user_profile")) {
-                		usertable.editTable(user);
+                		Command editCommand = new EditCommand(usertable, user);
+                		UserCommandInvoker invoker = new UserCommandInvoker();
+                        invoker.setCommand(editCommand);
+                        invoker.executeCommand();
+                		//usertable.editTable(user);
                 	}else {
-                		usertable.createNewTable();
-                		usertable.insertTable(user);
+                		UserCommandInvoker invoker = new UserCommandInvoker();
+                		
+                		Command cretenewCommand = new CreateNewCommand();
+                        invoker.setCommand(cretenewCommand);
+                        invoker.executeCommand();
+                		//usertable.createNewTable();
+                		Command InsertCommand = new InsertCommand(usertable,user);
+                		invoker.setCommand(InsertCommand);
+                        invoker.executeCommand();
+                		//usertable.insertTable(user);
                 	}
                 	
                 	tout.setText(user.toString());
                 	tout.setEditable(false);
                 	res.setText("edit Successfully..");
                 }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
             } catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -270,7 +298,10 @@ public class editPage  extends JFrame implements ActionListener {
 
 
         }
-
+        /**
+         * back to welcome Page
+         *
+         */
         else if (e.getSource() == back) {
             setVisible(false);
             new welcomePage();
