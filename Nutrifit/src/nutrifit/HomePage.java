@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
-
+import nutrifit.patterns.User;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class HomePage extends JFrame implements ActionListener {
