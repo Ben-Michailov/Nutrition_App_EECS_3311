@@ -22,10 +22,9 @@ public class FoodGroupChartFactory {
     private JFreeChart generateAverageMealChart() {
         DefaultPieDataset dataset = new DefaultPieDataset();
 
-        // Get the current date
         Date currentDate = Date.valueOf(LocalDate.now());
 
-        // Get HealthInfo data for the current date
+
         HealthInfo healthInfo;
         try {
             healthInfo = ReadWriteController.getInstance().retrieveDataBetweenDates(currentDate, currentDate);
@@ -34,7 +33,7 @@ public class FoodGroupChartFactory {
             return null;
         }
 
-        // Calculate percentages
+
         double totalAmount = healthInfo.getCarbohydrates() + healthInfo.getProtein() +
                 healthInfo.getFat() + healthInfo.getSugar();
 
@@ -43,21 +42,19 @@ public class FoodGroupChartFactory {
         double fatPercentage = (healthInfo.getFat() / totalAmount) * 100;
         double sugarPercentage = (healthInfo.getSugar() / totalAmount) * 100;
 
-        // Add data to the dataset
+
         dataset.setValue("Carbohydrates", carbohydratesPercentage);
         dataset.setValue("Protein", proteinPercentage);
         dataset.setValue("Fat", fatPercentage);
         dataset.setValue("Sugar", sugarPercentage);
 
-        // Create and return the chart as a PieChart
+
         JFreeChart chart = ChartFactory.createPieChart(
-                "Average Meal Composition",  // Chart title
-                dataset,                     // Dataset
-                true,                        // Include legend
+                "Average Meal Composition",  
+                dataset,              
+                true,                  
                 true,
                 false);
-
-        customizeChart(chart);
 
         return chart;
     }
@@ -65,31 +62,28 @@ public class FoodGroupChartFactory {
     private JFreeChart generateCFGChart() {
         DefaultPieDataset dataset = new DefaultPieDataset();
 
-        // Predetermined percentages for CFG
+
         double proteinPercentage = 25.0;
         double carbohydratesPercentage = 25.0;
         double fruitsAndVegetablesPercentage = 50.0;
 
-        // Add data to the dataset based on predetermined percentages
+
         dataset.setValue("Protein", proteinPercentage);
         dataset.setValue("Carbohydrates", carbohydratesPercentage);
         dataset.setValue("Fruits and Vegetables", fruitsAndVegetablesPercentage);
 
-        // Create and return the chart as a PieChart
+
         JFreeChart chart = ChartFactory.createPieChart(
-                "CFG Composition",  // Chart title
-                dataset,            // Dataset
-                true,               // Include legend
+                "CFG Composition",  
+                dataset,            
+                true,               
                 true,
                 false);
 
-        customizeChart(chart);
 
         return chart;
     }
 
-    private void customizeChart(JFreeChart chart) {
-        // Customize chart appearance if needed
-    }
+
 }
 
