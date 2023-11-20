@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import nutrifit.patterns.User;
 public class WeightLossGui {
 
     private JFrame frame;
