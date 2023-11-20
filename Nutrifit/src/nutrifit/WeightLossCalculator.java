@@ -1,6 +1,6 @@
 package nutrifit;
 import java.sql.Date;
-
+import nutrifit.patterns.User;
 
 
 public class WeightLossCalculator {
