@@ -1,6 +1,11 @@
 package nutrifit;
 
+
+
 import java.sql.Statement;
+
+import nutrifit.patterns.User;
+import nutrifit.patterns.UserBuilder;
 
 import java.sql.Connection;  
 import java.sql.PreparedStatement;
@@ -9,18 +14,10 @@ import java.sql.SQLException;
 import java.sql.Date;
 
 public class UserProfile extends Database{
-	//static final String usertable = "SELECT id, name, age , DOB , height, weight,sex FROM user_profile";
-	/*private String name;
-    private int age;
-    private Date DOB;
-    
-    private double height;
-    private double weight;
-    private String sex;
-    */
+
 
         /**
-         * Create a new table in the test database
+         * Create a new UserProfile table in the database
          *
          */
     	@Override
@@ -47,7 +44,10 @@ public class UserProfile extends Database{
     		      } 
     	}
 
-    	
+    	/**
+         * insert a user to UserProfile table
+         *
+         */
 		public void insertTable(User user) {
 			String sql = "INSERT INTO user_profile(id,name, age, DOB, height, weight, sex) VALUES(?,?,?,?,?,?,?)";
     		try(Connection conn = super.connect();
@@ -57,6 +57,7 @@ public class UserProfile extends Database{
     		         // Execute a query
     		         System.out.println("Inserting records into the table...");
     		        // INSERT INTO t(dob) VALUES(TO_DATE('17/12/2015', 'DD/MM/YYYY'));
+    		         
     		         pstmt.setInt(1,1);
     		         pstmt.setString(2, user.getName());
     		         pstmt.setInt(3, user.getAge());
@@ -78,7 +79,10 @@ public class UserProfile extends Database{
 		
         
 
-
+		/**
+         * read and return user from UserProfile table
+         *
+         */
     	@Override
     	public User readTable() {
 			 User user = new User();
@@ -90,13 +94,17 @@ public class UserProfile extends Database{
 			         while(rs.next()){
 			            //set user values
 			        	// rs.getInt("id");
-			        	 user.setName(rs.getString("name"));
-			        	 user.setAge(rs.getInt("age"));
-			        	 user.setDOB(rs.getString("DOB"));
-			        	 user.setHeight(rs.getDouble("height"));
-			        	 user.setWeight(rs.getDouble("weight"));
-			        	 user.setSex(rs.getString("sex"));
-			          
+			        	 UserBuilder userbuilder = new UserBuilder();
+			        	 userbuilder.setName(rs.getString("name"));
+			        	 userbuilder.setAge(rs.getInt("age"));
+			        	 userbuilder.setDOB(rs.getString("DOB"));
+			        	 userbuilder.setHeight(rs.getDouble("height"));
+			        	 userbuilder.setWeight(rs.getDouble("weight"));
+			        	 userbuilder.setSex(rs.getString("sex"));
+		                	
+		                 user = userbuilder.build();
+		                	
+			        	
 			         }
 			         stmt.close();
 			         conn.close();
@@ -108,7 +116,10 @@ public class UserProfile extends Database{
 			
 		
 
-
+    	/**
+         * edit user profile in UserProfile table
+         *
+         */
 		
 		public void editTable(User user) {
 			User user1 = readTable();
@@ -119,14 +130,7 @@ public class UserProfile extends Database{
     		     		      
     		         // Execute a query
     		         System.out.println("updating records into the table...");
-    		        // INSERT INTO t(dob) VALUES(TO_DATE('17/12/2015', 'DD/MM/YYYY'));
-    		        /* if(user.getName()!=null) {pstmt.setString(1, user.getName());}else {pstmt.setString(1, user1.getName());}
-    		         if(user.getAge()!=0) {pstmt.setInt(2, user.getAge());}else {pstmt.setInt(2, user1.getAge());}
-    		         if(user.getDOB()!=null) {pstmt.setString(3, user.getDOB());}else {pstmt.setString(3, user1.getDOB());}
-    		         if(user.getHeight()!=0.0) {pstmt.setDouble(4, user.getHeight());}else {pstmt.setDouble(4, user1.getHeight());}
-    		         if(user.getWeight()!=0.0) {pstmt.setDouble(5, user.getWeight());}else {pstmt.setDouble(5, user1.getWeight());}
-    		         if(user.getSex()!=null) {pstmt.setString(6, user.getSex());}else {pstmt.setString(6, user1.getSex());}
-    		        */
+    		    
     		         pstmt.setString(1, user.getName());
     		         pstmt.setInt(2, user.getAge());
     		         pstmt.setString(3, user.getDOB());
@@ -147,7 +151,10 @@ public class UserProfile extends Database{
 		}
 		
 		
-		
+		/**
+         * remove UserProfile table in database
+         *
+         */
 
 		@Override
 		public void removeTable() {
