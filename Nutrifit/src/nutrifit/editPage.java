@@ -277,8 +277,10 @@ public class editPage  extends JFrame implements ActionListener {
                 		UserCommandInvoker invoker = new UserCommandInvoker();
                 		
                 		Command cretenewCommand = new CreateNewCommand();
+                		((CreateNewCommand) cretenewCommand).setUserProfile(usertable); 
                         invoker.setCommand(cretenewCommand);
                         invoker.executeCommand();
+                		
                 		//usertable.createNewTable();
                 		Command InsertCommand = new InsertCommand(usertable,user);
                 		invoker.setCommand(InsertCommand);

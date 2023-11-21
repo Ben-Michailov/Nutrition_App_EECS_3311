@@ -11,4 +11,7 @@ public class CreateNewCommand implements Command{
 		
 	}
 	
+	public void setUserProfile(UserProfile userProfile) {
+		this.userProfile = userProfile;
+	}
 }

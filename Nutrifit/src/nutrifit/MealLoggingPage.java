@@ -408,10 +408,10 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	int YearInt = Integer.valueOf(year.getText()) - 1900;
             	
             	Date d1 = new Date(YearInt,monthInt,dayInt); 
-            	long dateLong = d1.getTime();
+            	//long dateLong = d1.getTime();
             	
             	
-            	mealExists = dataStorage.doesMealExist(selectedMeal, dateLong);
+            	mealExists = dataStorage.doesMealExist(selectedMeal, d1);
             	if (mealExists) {
             		mealExistsSuccessOrFail.setText("ERROR: Meal Already Entered");
             	}
@@ -435,6 +435,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
                 	if (ingredientsToBeAdded.size()!= 0) {
                 		sub.setEnabled(true);
                 	}*/
+            		
             	}
             	
             }
@@ -486,7 +487,9 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	i++;
             	
             	IngredientToBeAdded a1 = new IngredientToBeAdded(selectedMeal, foodID, amountEaten, d1);
-      
+            	System.out.println(selectedMeal+", "+foodID+", "+amountEaten);
+            	
+            	
             	ingredientsToBeAdded.add(a1);
             	
             	state = state.switchState(MealLoggingEvent.ADDINGREDIENT);
