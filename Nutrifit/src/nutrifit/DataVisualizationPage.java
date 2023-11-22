@@ -149,13 +149,15 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
         top10.addActionListener(this);
         c.add(top10);
 
-           
+        chartPanel.setEnabled(false);
    }
 
 
 		
    @Override
     public void actionPerformed(ActionEvent e) {
+	   
+	   		
             if(e.getSource() == back){
                 setVisible(false);
                 try {
@@ -185,10 +187,16 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
             	
             	try {
             		chart = generateChart.generateChart(startDate,endDate,5);
-            		chartPanel = new ChartPanel(chart);
-            		chartPanel.setSize(450,500);
-            		chartPanel.setLocation(450, 150);
-            		add(chartPanel);
+            		if (chartPanel != null) {
+            			chartPanel.setChart(chart);
+            		}
+            		else {
+	        			chartPanel = new ChartPanel(chart);
+	            		chartPanel.setSize(450,500);
+	            		chartPanel.setLocation(450, 150);
+	            		add(chartPanel);
+            		}
+
             		repaint();
             		revalidate();
             		setVisible(true);
@@ -218,12 +226,18 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
     	GenerateChart generateChart = new GenerateChart();
     	JFreeChart chart;
     	
+    	
     	try {
     		chart = generateChart.generateChart(startDate,endDate,10);
-    		chartPanel = new ChartPanel(chart);
-    		chartPanel.setSize(450,500);
-    		chartPanel.setLocation(450, 150);
-    		add(chartPanel);
+    		if (chartPanel != null) {
+    			chartPanel.setChart(chart);
+    		}
+    		else {
+    			chartPanel = new ChartPanel(chart);
+        		chartPanel.setSize(450,500);
+        		chartPanel.setLocation(450, 150);
+        		add(chartPanel);
+    		}
     		repaint();
     		revalidate();
     		setVisible(true);
