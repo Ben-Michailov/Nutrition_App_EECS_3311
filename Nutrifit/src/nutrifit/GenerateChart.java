@@ -3,6 +3,7 @@ package nutrifit;
 import java.io.*;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JFrame;
 
@@ -363,7 +364,26 @@ public JFreeChart generateBarChartReccomendedMilli(Date startDate, Date endDate)
 	    
 	    return chart;
 	}
-
+	
+	public JFreeChart generateLineChartCalories(Date startDate, Date endDate) throws Exception{
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
+		ReadWriteController controller = ReadWriteController.getInstance();
+		ArrayList<DateAndCalories> info = controller.retrieveCalorieDataBetweenDates(startDate, endDate);
+		
+		for (int i =0; i< info.size(); i++) {
+			dataset.addValue(info.get(i).getCaloriesBurned(), "Calories Burned",info.get(i).getDate() );
+			dataset.addValue(info.get(i).getCaloriesConsumed(), "Calories Consumed",info.get(i).getDate() );
+		}
+		
+		JFreeChart chart = ChartFactory.createLineChart(  
+		        "Calories Burned vs Calories Consumed", // Chart title  
+		        "Date", // X-Axis Label  
+		        "Calories (kCal)", // Y-Axis Label  
+		        dataset  
+		        );  
+		
+		return chart;
+	}
    
    /*public static void main( String[ ] args ) throws Exception {
 	   

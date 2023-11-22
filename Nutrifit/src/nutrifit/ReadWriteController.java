@@ -226,6 +226,8 @@ public class ReadWriteController extends Database {
 	    	
 	    }
 	
+	
+	
 	public ArrayList<FoodAmountAndFoodGroup> retrieveFoodGroupDataBetweenDates(Date startDate, Date endDate) throws Exception{
 		long startDateInMS = startDate.getTime();
     	long endDateInMS = endDate.getTime();
@@ -297,6 +299,76 @@ public class ReadWriteController extends Database {
     	
     }
    
+	public ArrayList<DateAndCalories> retrieveCalorieDataBetweenDates(Date startDate, Date endDate) throws Exception{
+		long startDateInMS = startDate.getTime();
+    	long endDateInMS = endDate.getTime();
+    	
+    	ArrayList<DateAndCalories> resultArrayList = new ArrayList<DateAndCalories>();
+    	
+    	if (endDateInMS < startDateInMS) {
+    		throw new Exception();
+    	}
+    	System.out.println(startDate.toString());
+    	Calendar calStart = Calendar.getInstance();
+    	calStart.setTime(startDate);
+    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+    	
+    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
+    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
+    	if ((calStart.get(Calendar.MONTH)+1)<10) {
+    		monthStart = "0"+monthStart;
+    	}
+    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
+    		dayStart = "0"+dayStart;
+    	}
+    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
+    	
+    	Calendar calEnd = Calendar.getInstance();
+    	calEnd.setTime(endDate);
+    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
+    	
+    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
+    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
+    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
+    		monthEnd = "0"+monthEnd;
+    	}
+    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
+    		dayEnd = "0"+dayEnd;
+    	}
+    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
+
+    	System.out.println(dateStartForSql);
+    	System.out.println(dateEndForSql);
+    	
+    	
+    	String sql="SELECT healthinfolog.date, SUM(healthinfolog.caloriesConsumed), SUM(healthinfolog.caloriesBurned) FROM healthinfolog WHERE date >= '"+dateStartForSql+"' AND date <= '"+dateEndForSql+"' GROUP BY healthinfolog.date ORDER BY date";
+	
+    	
+    	try (Connection conn = super.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+               // loop through the result set
+    		 while(rs.next()) {
+              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
+    			 
+    			resultArrayList.add(new DateAndCalories(rs.getDate("date"),rs.getInt("SUM(healthinfolog.caloriesConsumed)"), rs.getInt("SUM(healthinfolog.caloriesBurned)")));
+    		 } 
+               
+               
+               conn.close();
+           } catch (SQLException e) {
+               System.out.println(e.getMessage());
+           }
+    	//System.out.println(output);
+    	
+    	for (int i =0; i<resultArrayList.size(); i++) {
+    		System.out.println(resultArrayList.get(i));
+    	}
+    	
+    	return resultArrayList;
+    	
+    }
     
     public String debugDumpDatabase(){
         String sql = "SELECT * FROM healthInfoLog";
