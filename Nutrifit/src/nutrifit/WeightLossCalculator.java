@@ -6,10 +6,9 @@ import nutrifit.patterns.User;
 public class WeightLossCalculator {
 
     private User user;
-    ReadWriteController controller;
+    ReadWriteController controller= ReadWriteController.getInstance();
 
-    public WeightLossCalculator(User user) {
-        ReadWriteController controller = ReadWriteController.getInstance();
+    public WeightLossCalculator(User user) { 
         this.user= user;
 
     }

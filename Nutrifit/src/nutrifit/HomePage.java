@@ -18,6 +18,7 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton logExercise;
         private JButton visualizeData;
         private JButton bmr;
+        private JButton weightLoss;
      
         
         public HomePage() throws IOException {
@@ -85,6 +86,14 @@ public class HomePage extends JFrame implements ActionListener {
             bmr.addActionListener(this);
             c.add(bmr);
             
+            
+            weightLoss = new JButton("Weight Loss Calculator");
+            weightLoss.setFont(new Font("Arial", Font.PLAIN, 15));
+            weightLoss.setSize(240, 20);
+            weightLoss.setLocation(150, 340);
+            weightLoss.addActionListener(this);
+            c.add(weightLoss);
+            
             tout2 = new JTextArea();
             tout2.setFont(new Font("Arial", Font.PLAIN, 15));
             tout2.setSize(150, 20);
@@ -135,6 +144,11 @@ public class HomePage extends JFrame implements ActionListener {
             	UserProfile usertable = new UserProfile();
 		User user = usertable.readTable();
 		tout2.setText(Double.toString(user.BMRcalculator()));
+            }
+            else if(e.getSource() == weightLoss) {
+            	UserProfile usertable = new UserProfile();
+            	User user = usertable.readTable();
+            	new WeightLossGui(user);
             }
             else{
                 setVisible(false);

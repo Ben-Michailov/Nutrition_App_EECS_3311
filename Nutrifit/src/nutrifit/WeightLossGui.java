@@ -13,8 +13,8 @@ public class WeightLossGui {
     private JLabel resultLabel;
     private WeightLossCalculator calculator;
 
-    public WeightLossGui(WeightLossCalculator calculator) {
-        this.calculator = calculator;
+    public WeightLossGui(User user) {
+        this.calculator = new WeightLossCalculator(user);
         initialize();
     }
 
@@ -34,7 +34,7 @@ public class WeightLossGui {
         frame.getContentPane().add(targetDateTextField);
         targetDateTextField.setColumns(10);
 
-        JLabel lblTargetDate = new JLabel("Target Date:");
+        JLabel lblTargetDate = new JLabel("Target Date(yyyy-MM-dd):");
         lblTargetDate.setBounds(50, 50, 150, 20);
         frame.getContentPane().add(lblTargetDate);
 
@@ -42,6 +42,8 @@ public class WeightLossGui {
         resultLabel = new JLabel("");
         resultLabel.setBounds(50, 130, 300, 20);
         frame.getContentPane().add(resultLabel);
+        
+        setVisible(true);
 
         btnSubmit.addActionListener(e -> calculateWeightLoss());
     }
@@ -66,7 +68,7 @@ public class WeightLossGui {
         frame.setVisible(visible);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         User user = new User();
         WeightLossCalculator calculator = new WeightLossCalculator(user);
@@ -74,5 +76,5 @@ public class WeightLossGui {
 
         gui.setVisible(true);
 
-    }
+    }*/
 }
