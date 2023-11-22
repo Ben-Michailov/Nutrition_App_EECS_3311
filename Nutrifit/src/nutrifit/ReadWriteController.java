@@ -150,13 +150,87 @@ public class ReadWriteController extends Database {
     	
     }
     
-public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date startDate, Date endDate, int amountListed) throws Exception{
-    	
-
-    	long startDateInMS = startDate.getTime();
+	public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date startDate, Date endDate, int amountListed) throws Exception{
+	    	
+	
+	    	long startDateInMS = startDate.getTime();
+	    	long endDateInMS = endDate.getTime();
+	    	
+	    	ArrayList<NutrientNameAndAmount> resultArrayList = new ArrayList<NutrientNameAndAmount>();
+	    	
+	    	if (endDateInMS < startDateInMS) {
+	    		throw new Exception();
+	    	}
+	    	System.out.println(startDate.toString());
+	    	Calendar calStart = Calendar.getInstance();
+	    	calStart.setTime(startDate);
+	    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+	    	
+	    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
+	    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
+	    	if ((calStart.get(Calendar.MONTH)+1)<10) {
+	    		monthStart = "0"+monthStart;
+	    	}
+	    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
+	    		dayStart = "0"+dayStart;
+	    	}
+	    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
+	    	
+	    	Calendar calEnd = Calendar.getInstance();
+	    	calEnd.setTime(endDate);
+	    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
+	    	
+	    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
+	    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
+	    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
+	    		monthEnd = "0"+monthEnd;
+	    	}
+	    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
+	    		dayEnd = "0"+dayEnd;
+	    	}
+	    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
+	
+	    	System.out.println(dateStartForSql);
+	    	System.out.println(dateEndForSql);
+	    	
+	    	
+	    	String sql="SELECT `nutrient name`.NutrientName AS NutrientName, (V.NutrientAmountSum / IF(STRCMP(`nutrient name`.NutrientUnit,\"mg\") = 0, 1000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"µg\") = 0, 1000000, 1) / IF(STRCMP(`nutrient name`.NutrientUnit,\"IU\") = 0, 3333000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"NE\") = 0, 1000, 1)) "
+	    			+ "AS NutrientAmountSum FROM (SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT nutrientamount.foodID, nutrientamount.nutrientID, (nutrientamount.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM nutrientamount INNER JOIN healthinfolog ON nutrientamount.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"')"
+	    					+ " AS nutrients GROUP BY nutrientID) AS V, `nutrient name` WHERE `nutrient name`.NutrientID = V.NutrientID AND `nutrient name`.NutrientCode != 208 AND `nutrient name`.NutrientCode != 268 AND `nutrient name`.NutrientCode != 207 AND `nutrient name`.NutrientCode != 255 AND `nutrient name`.NutrientCode != 287 AND (`nutrient name`.NutrientCode < 210 OR `nutrient name`.NutrientCode > 214) AND "
+	    					+ "(`nutrient name`.NutrientCode < 501 OR `nutrient name`.NutrientCode > 521) AND `nutrient name`.NutrientCode < 605 ORDER BY NutrientAmountSum DESC LIMIT "+amountListed;
+	    	
+	    	
+	    	try (Connection conn = super.connect();
+	                Statement stmt  = conn.createStatement();
+	                ResultSet rs    = stmt.executeQuery(sql)){
+	               
+	               // loop through the result set
+	    		 while(rs.next()) {
+	              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
+	    			 
+	    			resultArrayList.add(new NutrientNameAndAmount(rs.getString("NutrientName"),rs.getDouble("NutrientAmountSum")));
+	    		 } 
+	               
+	               
+	               conn.close();
+	           } catch (SQLException e) {
+	               System.out.println(e.getMessage());
+	           }
+	    	//System.out.println(output);
+	    	
+	    	for (int i =0; i<resultArrayList.size(); i++) {
+	    		System.out.println(resultArrayList.get(i));
+	    	}
+	    	
+	    	return resultArrayList;
+	    	
+	    }
+	
+	public ArrayList<FoodAmountAndFoodGroup> retrieveFoodGroupDataBetweenDates(Date startDate, Date endDate) throws Exception{
+		long startDateInMS = startDate.getTime();
     	long endDateInMS = endDate.getTime();
     	
-    	ArrayList<NutrientNameAndAmount> resultArrayList = new ArrayList<NutrientNameAndAmount>();
+    	ArrayList<FoodAmountAndFoodGroup> resultArrayList = new ArrayList<FoodAmountAndFoodGroup>();
     	
     	if (endDateInMS < startDateInMS) {
     		throw new Exception();
@@ -194,10 +268,7 @@ public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date st
     	System.out.println(dateEndForSql);
     	
     	
-    	String sql="SELECT `nutrient name`.NutrientName AS NutrientName, (V.NutrientAmountSum / IF(STRCMP(`nutrient name`.NutrientUnit,\"mg\") = 0, 1000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"µg\") = 0, 1000000, 1) / IF(STRCMP(`nutrient name`.NutrientUnit,\"IU\") = 0, 3333000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"NE\") = 0, 1000, 1)) "
-    			+ "AS NutrientAmountSum FROM (SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT nutrientamount.foodID, nutrientamount.nutrientID, (nutrientamount.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM nutrientamount INNER JOIN healthinfolog ON nutrientamount.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"')"
-    					+ " AS nutrients GROUP BY nutrientID) AS V, `nutrient name` WHERE `nutrient name`.NutrientID = V.NutrientID AND `nutrient name`.NutrientCode != 208 AND `nutrient name`.NutrientCode != 268 AND `nutrient name`.NutrientCode != 207 AND `nutrient name`.NutrientCode != 255 AND `nutrient name`.NutrientCode != 287 AND (`nutrient name`.NutrientCode < 210 OR `nutrient name`.NutrientCode > 214) AND "
-    					+ "(`nutrient name`.NutrientCode < 501 OR `nutrient name`.NutrientCode > 521) AND `nutrient name`.NutrientCode < 605 ORDER BY NutrientAmountSum DESC LIMIT "+amountListed;
+    	String sql="SELECT SUM((healthinfolog.amountRatio * 100)) As Amount, `food group`.FoodGroupID FROM `food group`, `food name`, healthinfolog WHERE `food group`.FoodGroupID = `food name`.FoodGroupID AND `food name`.FoodID = healthinfolog.FoodID AND healthinfolog.date >= '"+dateStartForSql+"' AND healthinfolog.date <= '"+dateEndForSql+"' GROUP BY `food group`.FoodGroupID";
     	
     	
     	try (Connection conn = super.connect();
@@ -208,7 +279,7 @@ public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date st
     		 while(rs.next()) {
               //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
     			 
-    			resultArrayList.add(new NutrientNameAndAmount(rs.getString("NutrientName"),rs.getDouble("NutrientAmountSum")));
+    			resultArrayList.add(new FoodAmountAndFoodGroup(rs.getDouble("Amount"),rs.getInt("FoodGroupID")));
     		 } 
                
                
