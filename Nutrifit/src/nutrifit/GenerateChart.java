@@ -2,6 +2,7 @@ package nutrifit;
 
 import java.io.*;
 import java.sql.Date;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -13,17 +14,20 @@ import org.jfree.data.general.DefaultPieDataset;
 
 public class GenerateChart {
 	
-	public JFreeChart generateChart(Date startDate, Date endDate) throws Exception {
+	public JFreeChart generateChart(Date startDate, Date endDate, int amountListed) throws Exception {
 		ReadWriteController controller = ReadWriteController.getInstance();
-		HealthInfo info = controller.retrieveDataBetweenDates(startDate, endDate);
-		System.out.println(info.getProtein());
+		ArrayList<NutrientNameAndAmount> info = controller.retrieveAdvancedDataBetweenDates(startDate, endDate,amountListed);
+		//System.out.println(info.getProtein());
 		System.out.println(startDate +""+ endDate);
 	      DefaultPieDataset dataset = new DefaultPieDataset( );
 	      //dataset.setValue("test",1.0);
-	      dataset.setValue("Protein", info.getProtein() );
+	      for (int i =0; i< amountListed; i++) {
+	    	  dataset.setValue(info.get(i).getNutrientName(),info.get(i).getNutrientAmount());
+	      }
+	      /*dataset.setValue("Protein", info.getProtein() );
 	      dataset.setValue("Fat", info.getFat() );
 	      dataset.setValue("Carbohydrates", info.getCarbohydrates());
-	      dataset.setValue("Sugar", info.getSugar() );
+	      dataset.setValue("Sugar", info.getSugar() );*/
 
 	      JFreeChart chart = ChartFactory.createPieChart(
 	         "% of Nutrients Consumed",   // chart title

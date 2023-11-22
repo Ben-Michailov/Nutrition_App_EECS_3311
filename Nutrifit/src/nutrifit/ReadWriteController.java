@@ -1,6 +1,7 @@
 package nutrifit;
 
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
 
@@ -56,6 +57,8 @@ public class ReadWriteController extends Database {
         String sql = "CREATE TABLE IF NOT EXISTS healthInfoLog (\n"
                 + "	date date,\n"
                 + "	meal char,\n"
+                + "	foodID int,\n"
+                + "	amountRatio double,\n"
                 + " caloriesConsumed int,\n"
                 + " fat double,\n"
                 + " protein double,\n"
@@ -146,6 +149,82 @@ public class ReadWriteController extends Database {
     	return output;
     	
     }
+    
+public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date startDate, Date endDate, int amountListed) throws Exception{
+    	
+
+    	long startDateInMS = startDate.getTime();
+    	long endDateInMS = endDate.getTime();
+    	
+    	ArrayList<NutrientNameAndAmount> resultArrayList = new ArrayList<NutrientNameAndAmount>();
+    	
+    	if (endDateInMS < startDateInMS) {
+    		throw new Exception();
+    	}
+    	System.out.println(startDate.toString());
+    	Calendar calStart = Calendar.getInstance();
+    	calStart.setTime(startDate);
+    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+    	
+    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
+    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
+    	if ((calStart.get(Calendar.MONTH)+1)<10) {
+    		monthStart = "0"+monthStart;
+    	}
+    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
+    		dayStart = "0"+dayStart;
+    	}
+    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
+    	
+    	Calendar calEnd = Calendar.getInstance();
+    	calEnd.setTime(endDate);
+    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
+    	
+    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
+    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
+    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
+    		monthEnd = "0"+monthEnd;
+    	}
+    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
+    		dayEnd = "0"+dayEnd;
+    	}
+    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
+
+    	System.out.println(dateStartForSql);
+    	System.out.println(dateEndForSql);
+    	
+    	
+    	String sql="SELECT `nutrient name`.NutrientName AS NutrientName, (V.NutrientAmountSum / IF(STRCMP(`nutrient name`.NutrientUnit,\"mg\") = 0, 1000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"µg\") = 0, 1000000, 1) / IF(STRCMP(`nutrient name`.NutrientUnit,\"IU\") = 0, 3333000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"NE\") = 0, 1000, 1)) AS NutrientAmountSum FROM (SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT nutrientamount.foodID, nutrientamount.nutrientID, (nutrientamount.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM nutrientamount INNER JOIN healthinfolog ON nutrientamount.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"') AS nutrients GROUP BY nutrientID) AS V, `nutrient name` WHERE `nutrient name`.NutrientID = V.NutrientID AND V.NutrientID != 208 AND V.NutrientID != 268 AND (V.NutrientID<605 OR V.NutrientID>631) AND (V.NutrientID<645 OR V.NutrientID>803) AND (V.NutrientID<817 OR V.NutrientID>833) AND (V.NutrientID<838 OR V.NutrientID>861) AND V.NutrientID!=868 AND V.NutrientID!= 869 AND V.NutrientID!= 255 ORDER BY NutrientAmountSum DESC LIMIT "+amountListed;
+    	//String sql="SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT nutrientamount.foodID, nutrientamount.nutrientID, (nutrientamount.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM nutrientamount INNER JOIN healthinfolog ON nutrientamount.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"') AS nutrients GROUP BY nutrientID ORDER BY NutrientAmountSum DESC LIMIT "+amountListed;
+
+    	//String sql="SELECT SUM(caloriesConsumed), SUM(protein), SUM(fat), SUM(carbohydrates), SUM(sugar), SUM(caloriesBurned) FROM healthInfoLog WHERE date>='"+dateStartForSql+"' AND date<='"+dateEndForSql+"'";
+    	
+    	
+    	try (Connection conn = super.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+               // loop through the result set
+    		 while(rs.next()) {
+              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
+    			 
+    			resultArrayList.add(new NutrientNameAndAmount(rs.getString("NutrientName"),rs.getDouble("NutrientAmountSum")));
+    		 } 
+               
+               
+               conn.close();
+           } catch (SQLException e) {
+               System.out.println(e.getMessage());
+           }
+    	//System.out.println(output);
+    	
+    	for (int i =0; i<resultArrayList.size(); i++) {
+    		System.out.println(resultArrayList.get(i));
+    	}
+    	
+    	return resultArrayList;
+    	
+    }
    
     
     public String debugDumpDatabase(){
@@ -159,6 +238,8 @@ public class ReadWriteController extends Database {
             while (rs.next()) {
             	output =rs.getDate("date") +  "\t" + 
                         rs.getString("meal") + "\t" +
+                        rs.getInt("foodID") + "\t" +
+                        rs.getDouble("amountRatio") + "\t" +
                         rs.getInt("caloriesConsumed")+ "\t" +
                         rs.getDouble("protein")+ "\t" +
                         rs.getDouble("fat")+ "\t" +
@@ -231,7 +312,7 @@ public class ReadWriteController extends Database {
     	String[] output = new String[5689];
     	//String[] output = new String[5];
     	int i = 0;
-    	String sql = "SELECT FoodDescription FROM foodname"; 
+    	String sql = "SELECT FoodDescription FROM `food name`"; 
     	try (Connection conn = super.connect();
                 Statement stmt  = conn.createStatement();
                 ResultSet rs    = stmt.executeQuery(sql)){
@@ -256,7 +337,7 @@ public class ReadWriteController extends Database {
     	String output = "";
     	System.out.println(foodName);
     	System.out.println("in id of a given food");
-    	String sql = "SELECT FoodID FROM foodname WHERE FoodDescription='"+foodName+"'";
+    	String sql = "SELECT FoodID FROM `food name` WHERE FoodDescription='"+foodName+"'";
 
     	
     	try (Connection conn = super.connect();
@@ -286,7 +367,7 @@ public class ReadWriteController extends Database {
     	
         
         
-        storeIntoHealthLogTable(date,'n',0,0.0,0.0,0.0,0.0, caloriesBurned);
+        storeIntoHealthLogTable(date,'n',0,0,0,0.0,0.0,0.0,0.0, caloriesBurned);
         
     }
     
@@ -351,7 +432,7 @@ public class ReadWriteController extends Database {
         System.out.println("Calories Consumed " + caloriesConsumed + "protein" +protein+"fat"+fat+"carbs"+carbohydrates+"suagr"+ sugar);
         
         
-        storeIntoHealthLogTable(date,mealChar, caloriesConsumed,fat,protein,carbohydrates, sugar, 0);
+        storeIntoHealthLogTable(date,mealChar, foodID,ratioToHundredGrams,caloriesConsumed,fat,protein,carbohydrates, sugar, 0);
         
         //insert(date, )
         
@@ -359,20 +440,22 @@ public class ReadWriteController extends Database {
     
     
     
-    private void storeIntoHealthLogTable(Date date, char meal, int caloriesConsumed, double fat, double protein, double carbohydrates, double sugar, int caloriesBurned) {
-        String sql = "INSERT INTO healthInfoLog(date, meal, caloriesConsumed, fat, protein, carbohydrates, sugar, caloriesBurned) VALUES(?,?,?,?,?,?,?,?)";
+    private void storeIntoHealthLogTable(Date date, char meal, int foodID, double amountRatio, int caloriesConsumed, double fat, double protein, double carbohydrates, double sugar, int caloriesBurned) {
+        String sql = "INSERT INTO healthInfoLog(date, meal, foodID, amountRatio, caloriesConsumed, fat, protein, carbohydrates, sugar, caloriesBurned) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = super.connect();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
            // pstmt.setInt(0,id);
             pstmt.setDate(1, date);
             pstmt.setString(2, String.valueOf(meal));
-            pstmt.setInt(3,caloriesConsumed);
-            pstmt.setDouble(4, fat);
-            pstmt.setDouble(5, protein);
-            pstmt.setDouble(6, carbohydrates);
-            pstmt.setDouble(7, sugar);
-            pstmt.setInt(8, caloriesBurned);
+            pstmt.setInt(3,foodID);
+            pstmt.setDouble(4,amountRatio);
+            pstmt.setInt(5,caloriesConsumed);
+            pstmt.setDouble(6, fat);
+            pstmt.setDouble(7, protein);
+            pstmt.setDouble(8, carbohydrates);
+            pstmt.setDouble(9, sugar);
+            pstmt.setInt(10, caloriesBurned);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
