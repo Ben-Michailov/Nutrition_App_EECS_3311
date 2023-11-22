@@ -31,6 +31,8 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
     private JTextField endYear;
     private JButton top5;
     private JButton top10;
+    private JButton barGraphReccomendedNutrients;
+  
     
     private ChartPanel chartPanel;
    // private JLabel successOrFail;
@@ -148,6 +150,13 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
         top10.setLocation(190, 500);
         top10.addActionListener(this);
         c.add(top10);
+        
+        barGraphReccomendedNutrients = new JButton("Show Reccomended Nutrients");
+        barGraphReccomendedNutrients.setFont(new Font("Arial", Font.PLAIN, 15));
+        barGraphReccomendedNutrients.setSize(300, 20);
+        barGraphReccomendedNutrients.setLocation(80, 540);
+        barGraphReccomendedNutrients.addActionListener(this);
+        c.add(barGraphReccomendedNutrients);
 
         chartPanel.setEnabled(false);
    }
@@ -248,7 +257,49 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
 		}
     
         }
-    }
+            
+        else if (e.getSource() == barGraphReccomendedNutrients) {
+    		
+        	
+    		int startDayInt = Integer.valueOf(startDay.getText());
+    		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+    		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+    		
+    		int endDayInt = Integer.valueOf(endDay.getText());
+    		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+    		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+    		
+    		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+    		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+    		
+    	
+    		
+    		GenerateChart generateChart = new GenerateChart();
+    		JFreeChart chart;
+    		
+    		
+    		try {
+    			chart = generateChart.generateBarChartReccomended(startDate,endDate);
+    			if (chartPanel != null) {
+    				chartPanel.setChart(chart);
+    			}
+    			else {
+    				chartPanel = new ChartPanel(chart);
+    	    		chartPanel.setSize(450,500);
+    	    		chartPanel.setLocation(450, 150);
+    	    		add(chartPanel);
+    			}
+    			repaint();
+    			revalidate();
+    			setVisible(true);
+    			
+    		} catch (Exception e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		}
+    	
+    	    }
+    	} 
   /* public static void main(String[] args) throws IOException, InterruptedException, Exception {  
 		DataVisualizationPage test = new DataVisualizationPage();
    } */

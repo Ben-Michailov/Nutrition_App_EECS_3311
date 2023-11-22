@@ -12,6 +12,14 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset; 
+import org.jfree.data.category.DefaultCategoryDataset; 
+import org.jfree.ui.ApplicationFrame; 
+import org.jfree.ui.RefineryUtilities;
+
+import java.util.concurrent.TimeUnit;
+
 public class GenerateChart {
 	
 	public JFreeChart generateChart(Date startDate, Date endDate, int amountListed) throws Exception {
@@ -37,6 +45,72 @@ public class GenerateChart {
 	         false);
 	      
 	      return chart;
+	}
+	
+public JFreeChart generateBarChartReccomended(Date startDate, Date endDate) throws Exception {
+		
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		ReadWriteController controller = ReadWriteController.getInstance();
+		ArrayList<NutrientNameAndAmount> info = controller.retrieveAdvancedDataBetweenDates(startDate, endDate,40);
+		
+		TimeUnit timeUnit=TimeUnit.DAYS;
+		long diffInMillies = endDate.getTime() - startDate.getTime();
+	    long dayDiff = timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+		
+	    System.out.println("days between"+dayDiff);
+	    
+		for (int i =0; i< 15; i++) {
+				if (info.get(i).getNutrientName().equals("PROTEIN")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Protein");
+				}
+				if (info.get(i).getNutrientName().equals("CARBOHYDRATE, TOTAL (BY DIFFERENCE)")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Carbohydrates");
+				}
+				if (info.get(i).getNutrientName().equals("FAT (TOTAL LIPIDS)")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Fats");
+				}
+				
+				if (info.get(i).getNutrientName().equals("FIBRE, TOTAL DIETARY")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Fibre");
+				}
+				
+				if (info.get(i).getNutrientName().equals("SODIUM")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Sodium");
+				}
+				
+				if (info.get(i).getNutrientName().equals("CHOLESTEROL")) {
+					dataset.addValue(info.get(i).getNutrientAmount(),"Your Intake","Cholesterol");
+				}
+				
+				
+	    	  //dataset.addValue(info.get(i).getNutrientName(),info.get(i).getNutrientAmount());
+	      }
+		
+		// Reccomended Values taken from: https://www.fda.gov/media/99059/download
+
+	    dataset.addValue(50*dayDiff, "Reccomended", "Protein");   
+ 
+	    dataset.addValue(78*dayDiff, "Reccomended", "Fats");   
+ 
+	    dataset.addValue(275*dayDiff, "Reccomended", "Carbohydrates");  
+	    
+	    dataset.addValue(28*dayDiff, "Reccomended", "Fibre");
+	    
+	    dataset.addValue(2.3*dayDiff, "Reccomended", "Sodium");
+	    
+	    dataset.addValue(3*dayDiff, "Reccomended", "Cholesterol");
+	    
+		JFreeChart chart=ChartFactory.createBarChart(  
+		        "Your Nutrient Intake vs Reccomended Over Specified Time Interval", //Chart Title  
+		        "Nutrient", // Category axis  
+		        "Amount (in grams)", // Value axis  
+		        dataset,  
+		        PlotOrientation.VERTICAL,  
+		        true,true,false  
+		       );  
+		 
+	    
+	    return chart;
 	}
 
    
