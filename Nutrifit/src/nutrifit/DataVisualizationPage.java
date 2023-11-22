@@ -29,6 +29,8 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
     private JTextField endDay;
     private JTextField endMonth;
     private JTextField endYear;
+    private JButton top5;
+    private JButton top10;
     
     private ChartPanel chartPanel;
    // private JLabel successOrFail;
@@ -54,7 +56,7 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
         back = new JButton("back");
         back.setFont(new Font("Arial", Font.PLAIN, 15));
         back.setSize(100, 20);
-        back.setLocation(190, 450);
+        back.setLocation(80, 450);
         back.addActionListener(this);
         c.add(back);
 
@@ -126,16 +128,27 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
        
         
 
-        sub = new JButton("Submit");
+        /*sub = new JButton("Basic Nutrients");
         sub.setFont(new Font("Arial", Font.PLAIN, 15));
         sub.setSize(100, 20);
         sub.setLocation(80, 450);
         sub.addActionListener(this);
-        c.add(sub);
-      
-           
-          
-           
+        c.add(sub);*/
+        
+        top5 = new JButton("Top 5");
+        top5.setFont(new Font("Arial", Font.PLAIN, 15));
+        top5.setSize(100, 20);
+        top5.setLocation(80, 500);
+        top5.addActionListener(this);
+        c.add(top5);
+        
+        top10 = new JButton("Top 10");
+        top10.setFont(new Font("Arial", Font.PLAIN, 15));
+        top10.setSize(100, 20);
+        top10.setLocation(190, 500);
+        top10.addActionListener(this);
+        c.add(top10);
+
            
    }
 
@@ -151,7 +164,7 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-            }else if (e.getSource() == sub) {
+            }else if (e.getSource() == top5) {
             		
             	
             	int startDayInt = Integer.valueOf(startDay.getText());
@@ -165,12 +178,7 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
             	Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
             	Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
             	
-            	try {
-					dataStorage.retrieveAdvancedDataBetweenDates(startDate, endDate, 5);
-				} catch (Exception e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
+
             	
             	GenerateChart generateChart = new GenerateChart();
             	JFreeChart chart;
@@ -191,6 +199,40 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
 				}
             
 
+        } else if (e.getSource() == top10) {
+    		
+        	
+    	int startDayInt = Integer.valueOf(startDay.getText());
+    	int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+    	int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+    	
+    	int endDayInt = Integer.valueOf(endDay.getText());
+    	int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+    	int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+    	
+    	Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+    	Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+    	
+
+    	
+    	GenerateChart generateChart = new GenerateChart();
+    	JFreeChart chart;
+    	
+    	try {
+    		chart = generateChart.generateChart(startDate,endDate,10);
+    		chartPanel = new ChartPanel(chart);
+    		chartPanel.setSize(450,500);
+    		chartPanel.setLocation(450, 150);
+    		add(chartPanel);
+    		repaint();
+    		revalidate();
+    		setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    
         }
     }
   /* public static void main(String[] args) throws IOException, InterruptedException, Exception {  
