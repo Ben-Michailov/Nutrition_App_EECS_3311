@@ -195,7 +195,7 @@ public class ReadWriteController extends Database {
 	    	
 	    	
 	    	String sql="SELECT `nutrient name`.NutrientName AS NutrientName, (V.NutrientAmountSum / IF(STRCMP(`nutrient name`.NutrientUnit,\"mg\") = 0, 1000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"µg\") = 0, 1000000, 1) / IF(STRCMP(`nutrient name`.NutrientUnit,\"IU\") = 0, 3333000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"NE\") = 0, 1000, 1)) "
-	    			+ "AS NutrientAmountSum FROM (SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT nutrientamount.foodID, nutrientamount.nutrientID, (nutrientamount.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM nutrientamount INNER JOIN healthinfolog ON nutrientamount.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"')"
+	    			+ "AS NutrientAmountSum FROM (SELECT nutrientID, SUM(NutrientAmount) AS NutrientAmountSum FROM (SELECT `nutrient amount`.foodID, `nutrient amount`.nutrientID, (`nutrient amount`.NutrientValue * healthinfolog.amountRatio) AS NutrientAmount FROM `nutrient amount` INNER JOIN healthinfolog ON `nutrient amount`.foodID = healthinfolog.foodID AND healthinfolog.date<='"+dateEndForSql+"' AND healthinfolog.date>='"+dateStartForSql+"')"
 	    					+ " AS nutrients GROUP BY nutrientID) AS V, `nutrient name` WHERE `nutrient name`.NutrientID = V.NutrientID AND `nutrient name`.NutrientCode != 208 AND `nutrient name`.NutrientCode != 268 AND `nutrient name`.NutrientCode != 207 AND `nutrient name`.NutrientCode != 255 AND `nutrient name`.NutrientCode != 287 AND (`nutrient name`.NutrientCode < 210 OR `nutrient name`.NutrientCode > 214) AND "
 	    					+ "(`nutrient name`.NutrientCode < 501 OR `nutrient name`.NutrientCode > 521) AND `nutrient name`.NutrientCode < 605 ORDER BY NutrientAmountSum DESC LIMIT "+amountListed;
 	    	
@@ -555,7 +555,7 @@ public class ReadWriteController extends Database {
         };*/
     	
     	
-    	String sql = "SELECT NutrientValue FROM nutrientamount WHERE FoodID="+foodID+" AND (NutrientID=203 OR NutrientID=208 OR NutrientID=204 OR NutrientID = 205 OR NutrientID= 269);";
+    	String sql = "SELECT NutrientValue FROM `nutrient amount` WHERE FoodID="+foodID+" AND (NutrientID=203 OR NutrientID=208 OR NutrientID=204 OR NutrientID = 205 OR NutrientID= 269);";
         
     	int caloriesConsumed=0;
     	double protein=0;
