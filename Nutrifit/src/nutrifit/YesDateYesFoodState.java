@@ -12,6 +12,7 @@ public class YesDateYesFoodState extends MealLoggingState{
 		mealLoggingPage.enterDateState(false);
 		mealLoggingPage.typeOfMealComboBoxState(false);
 		
+		mealLoggingPage.searchState(true);
 		mealLoggingPage.amountTextFieldState(true);
 		mealLoggingPage.foodComboBoxState(true);
 		mealLoggingPage.changeDateState(true);

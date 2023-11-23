@@ -15,6 +15,7 @@ public class NoDateNoFoodState extends MealLoggingState {
 		mealLoggingPage.enterDateState(true);
 		mealLoggingPage.typeOfMealComboBoxState(true);
 		
+		mealLoggingPage.searchState(false);
 		mealLoggingPage.amountTextFieldState(false);
 		mealLoggingPage.foodComboBoxState(false);
 		mealLoggingPage.submitButtonState(false);

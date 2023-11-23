@@ -369,7 +369,7 @@ public class ReadWriteController extends Database {
     	return resultArrayList;
     	
     }
-    
+	
     public String debugDumpDatabase(){
         String sql = "SELECT * FROM healthInfoLog";
         String output = "";
@@ -473,6 +473,32 @@ public class ReadWriteController extends Database {
             System.out.println(e.getMessage());
         }
    	 
+    	return output;
+    }
+    
+    public String[] searchFoodNames(String search) {
+    	ArrayList<String> list = new ArrayList<String>();
+    	
+    	//String[] output = new String[5];
+    	String sql = "SELECT `food name`.FoodDescription FROM `food name` WHERE FoodDescription LIKE '%"+search+"%';"; 
+    	try (Connection conn = super.connect();
+                Statement stmt  = conn.createStatement();
+                ResultSet rs    = stmt.executeQuery(sql)){
+               
+    		while (rs.next()) {
+    			list.add(rs.getString("FoodDescription"));
+            	
+    		}
+    		System.out.println("in conn foodnames()");
+    	} catch (SQLException e) {
+    		System.out.println("there has been an error in  foodnames()");
+            System.out.println(e.getMessage());
+        }
+    	
+    	String[] output = new String[list.size()];
+    	for(int i=0; i<list.size();i++) {
+    		output[i] = list.get(i);
+    	}
     	return output;
     }
     
