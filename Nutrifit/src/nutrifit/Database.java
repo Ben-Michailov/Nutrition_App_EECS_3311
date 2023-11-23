@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Database {
-	/* new connector for MySQL*/
+	/* connector for MySQL*/
 	public  Connection connect() {  
  
 		// please modify your own source
@@ -30,30 +30,10 @@ public abstract class Database {
 	        
 	    }
 	 
-	/*public  Connection connect() {  
-		Connection conn = null;  
-	        try {  
-	            // db parameters  
-	        	String url = "jdbc:sqlite:test_database";
-	            // create a connection to the database  
-	            conn = DriverManager.getConnection(url);  
-	              
-	            System.out.println("Connection to SQLite has been established.");  
-	              
-	        } catch (SQLException e) {  
-	            System.out.println(e.getMessage());  
-	        } /*finally {  
-	            try {  
-	                if (conn != null) {  
-	                    conn.close();  
-	                }  
-	            } catch (SQLException ex) {  
-	                System.out.println(ex.getMessage());  
-	            }  
-	        }  
-	        
-	        return conn;
-	    }  */
+	/**
+     	* check if table in database by "table name"
+     	*
+     	*/
 	
 	boolean tableExists(String tableName) throws SQLException {
 		boolean found = false;
