@@ -21,6 +21,10 @@ public class HomePage extends JFrame implements ActionListener {
         private JButton weightLoss;
      
         
+        /**
+         * Home Page frame set
+         *
+         */
         public HomePage() throws IOException {
 
             setTitle("Home Page");
@@ -106,7 +110,10 @@ public class HomePage extends JFrame implements ActionListener {
 
             setVisible(true);
     }
-
+	 /**
+         * button listener
+         *
+         */
     @Override
     public void actionPerformed(ActionEvent e) {
             if(e.getSource() == back){
