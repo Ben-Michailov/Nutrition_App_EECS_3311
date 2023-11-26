@@ -23,7 +23,7 @@ public abstract class Database {
 	        	Class.forName("com.mysql.cj.jdbc.Driver");  
 	        	conn=DriverManager.getConnection(url,username,password);  
 	              
-	            System.out.println("Connection to SQLite has been established.");  
+	            System.out.println("Connection to DataBase has been established.");  
 	        }catch(Exception e){ System.out.println(e);}  
 	    
 	        return conn;
