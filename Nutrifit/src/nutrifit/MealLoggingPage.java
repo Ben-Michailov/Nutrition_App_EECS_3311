@@ -34,9 +34,11 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     private JTextField month;
     private JTextField year;
     private JLabel successOrFail;
+    private JButton search;
     private int i =0;
     private JButton submitMeal;
     private boolean mealExists = true;
+    //private DefaultListModel modelFoods;
     
     MealLoggingState state;
     
@@ -210,11 +212,21 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         
    
         
-        tfood = new JComboBox(possibleFoods);
+        //tfood = new JComboBox(possibleFoods);
+        tfood=new JComboBox();
         tfood.setFont(new Font("Arial", Font.PLAIN, 15));
         tfood.setSize(400, 20);
         tfood.setLocation(100, 325);
+        //tfood.setEditable(true);
         c.add(tfood);
+        
+        search = new JButton("Search");
+        search.setFont(new Font("Arial", Font.PLAIN, 12));
+        search.setSize(80, 20);
+        search.setLocation(10, 325);
+        search.addActionListener(this);
+        //sub.setEnabled(false);
+        c.add(search);
         
         amount = new JLabel("Enter Amount Eaten (in grams)");
         amount.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -278,6 +290,11 @@ public class MealLoggingPage extends JFrame implements ActionListener {
 
     }
     
+    public void searchState(boolean eOrD) {
+    	search.setEnabled(eOrD);
+
+    }
+    
     /*
 	private JButton changeDate;*/
   
@@ -299,6 +316,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     
     public void foodComboBoxState(boolean eOrD) {
 
+    	tfood.setEditable(eOrD);
     	tfood.setEnabled(eOrD);
     	
     }
@@ -541,6 +559,14 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         		state.handle();
             	
             	ingredientsModel.clear();
+        }
+            else if (e.getSource() == search) {
+            	
+            	System.out.println((String) tfood.getEditor().getItem());
+            	String[] searchFoodNames = dataStorage.searchFoodNames((String) tfood.getEditor().getItem());
+            	
+            	tfood.setModel(new DefaultComboBoxModel(searchFoodNames));
+            
         }
     }
 }
