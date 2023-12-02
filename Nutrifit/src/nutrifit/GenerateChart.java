@@ -22,6 +22,16 @@ import org.jfree.ui.RefineryUtilities;
 import java.util.concurrent.TimeUnit;
 
 public class GenerateChart {
+
+	/**
+     * Generates a pie chart representing the percentage of nutrients consumed between the specified dates.
+     *
+     * @param startDate     Start date of the interval
+     * @param endDate       End date of the interval
+     * @param amountListed  Number of nutrients to include in the chart
+     * @return JFreeChart object representing the pie chart
+     * @throws Exception if there is an issue retrieving data or generating the chart
+     */
 	
 	public JFreeChart generateChart(Date startDate, Date endDate, int amountListed) throws Exception {
 		ReadWriteController controller = ReadWriteController.getInstance();
@@ -47,7 +57,14 @@ public class GenerateChart {
 	      
 	      return chart;
 	}
-	
+	/**
+     * Generates a bar chart comparing the user's nutrient intake to recommended values over a specified time interval.
+     *
+     * @param startDate Start date of the interval
+     * @param endDate   End date of the interval
+     * @return JFreeChart object representing the bar chart
+     * @throws Exception if there is an issue retrieving data or generating the chart
+     */
 public JFreeChart generateBarChartReccomendedMacro(Date startDate, Date endDate) throws Exception {
 		
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -107,7 +124,14 @@ public JFreeChart generateBarChartReccomendedMacro(Date startDate, Date endDate)
 	    
 	    return chart;
 	}
-
+    /**
+     * Generates a bar chart comparing the user's nutrient intake to recommended values (in milligrams) over a specified time interval.
+     *
+     * @param startDate Start date of the interval
+     * @param endDate   End date of the interval
+     * @return JFreeChart object representing the bar chart
+     * @throws Exception if there is an issue retrieving data or generating the chart
+     */
 public JFreeChart generateBarChartReccomendedMilli(Date startDate, Date endDate) throws Exception {
 	
 	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -180,6 +204,15 @@ public JFreeChart generateBarChartReccomendedMilli(Date startDate, Date endDate)
     
     return chart;
 }
+
+	/**
+	 * Generates a bar chart comparing the user's intake of micro-nutrients to recommended values (in micrograms) over a specified time interval.
+	 *
+	 * @param startDate Start date of the interval
+	 * @param endDate   End date of the interval
+	 * @return JFreeChart object representing the bar chart
+	 * @throws Exception if there is an issue retrieving data or generating the chart
+	 */
 
 	public JFreeChart generateBarChartReccomendedMicro(Date startDate, Date endDate) throws Exception {
 		
@@ -257,7 +290,14 @@ public JFreeChart generateBarChartReccomendedMilli(Date startDate, Date endDate)
 	    
 	    return chart;
 	}
-	
+	/**
+	 * Generates a bar chart comparing the user's intake of various food groups to recommended servings over a specified time interval.
+	 *
+	 * @param startDate Start date of the interval
+	 * @param endDate   End date of the interval
+	 * @return JFreeChart object representing the bar chart
+	 * @throws Exception if there is an issue retrieving data or generating the chart
+	 */
 	public JFreeChart generateBarChartFoodGroups(Date startDate, Date endDate) throws Exception {
 		
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -364,6 +404,15 @@ public JFreeChart generateBarChartReccomendedMilli(Date startDate, Date endDate)
 	    
 	    return chart;
 	}
+	
+	/**
+	 * Generates a line chart comparing calories burned and consumed over a specified time interval.
+	 *
+	 * @param startDate Start date of the interval
+	 * @param endDate   End date of the interval
+	 * @return JFreeChart object representing the line chart
+	 * @throws Exception if there is an issue retrieving data or generating the chart
+	 */
 	
 	public JFreeChart generateLineChartCalories(Date startDate, Date endDate) throws Exception{
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
