@@ -113,287 +113,311 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
 	}
 
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-
-		if (e.getSource() == back) {
-			setVisible(false);
-			try {
-				new HomePage();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		} else if (e.getSource() == top5) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-			try {
-				chart = generateChart.generateChart(startDate, endDate, 5);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
+   @Override
+    public void actionPerformed(ActionEvent e) {
+	   
+	   		
+            if(e.getSource() == back){
+                setVisible(false);
+                try {
+					new HomePage();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+            }else if (e.getSource() == top5) {
+            		
+            	
+            	int startDayInt = Integer.valueOf(startDay.getText());
+            	int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+            	int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+            	
+            	int endDayInt = Integer.valueOf(endDay.getText());
+            	int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+            	int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+            	
+            	Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+            	Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+            	
 
-				repaint();
-				revalidate();
-				setVisible(true);
+            	
+            	GenerateChart generateChart = new GenerateChart();
+            	JFreeChart chart;
+            	
+            	try {
+            		chart = generateChart.generateChart(startDate,endDate,5);
+            		if (chartPanel != null) {
+            			chartPanel.setChart(chart);
+            		}
+            		else {
+	        			chartPanel = new ChartPanel(chart);
+	            		chartPanel.setSize(450,500);
+	            		chartPanel.setLocation(450, 150);
+	            		add(chartPanel);
+            		}
 
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-
-		} else if (e.getSource() == top10) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateChart(startDate, endDate, 10);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
+            		repaint();
+            		revalidate();
+            		setVisible(true);
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				repaint();
-				revalidate();
-				setVisible(true);
+            
 
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+        } else if (e.getSource() == top10) {
+    		
+        	
+    	int startDayInt = Integer.valueOf(startDay.getText());
+    	int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+    	int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+    	
+    	int endDayInt = Integer.valueOf(endDay.getText());
+    	int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+    	int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+    	
+    	Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+    	Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+    	
 
-		} else if (e.getSource() == barGraphReccomendedNutrients) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateBarChartReccomendedMacro(startDate, endDate);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
-				}
-				repaint();
-				revalidate();
-				setVisible(true);
-
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		} else if (e.getSource() == barGraphMilli) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateBarChartReccomendedMilli(startDate, endDate);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
-				}
-				repaint();
-				revalidate();
-				setVisible(true);
-
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		} else if (e.getSource() == barGraphMicro) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateBarChartReccomendedMicro(startDate, endDate);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
-				}
-				repaint();
-				revalidate();
-				setVisible(true);
-
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		} else if (e.getSource() == foodGroups) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateBarChartFoodGroups(startDate, endDate);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
-				}
-				repaint();
-				revalidate();
-				setVisible(true);
-
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		} else if (e.getSource() == calories) {
-
-
-			int startDayInt = Integer.valueOf(startDay.getText());
-			int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
-			int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
-
-			int endDayInt = Integer.valueOf(endDay.getText());
-			int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
-			int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
-
-			Date startDate = new Date(startYearInt, startMonthInt, startDayInt);
-			Date endDate = new Date(endYearInt, endMonthInt, endDayInt);
-
-
-			GenerateChart generateChart = new GenerateChart();
-			JFreeChart chart;
-
-
-			try {
-				chart = generateChart.generateLineChartCalories(startDate, endDate);
-				if (chartPanel != null) {
-					chartPanel.setChart(chart);
-				} else {
-					chartPanel = new ChartPanel(chart);
-					chartPanel.setSize(450, 500);
-					chartPanel.setLocation(450, 150);
-					add(chartPanel);
-				}
-				repaint();
-				revalidate();
-				setVisible(true);
-
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+    	
+    	GenerateChart generateChart = new GenerateChart();
+    	JFreeChart chart;
+    	
+    	
+    	try {
+    		chart = generateChart.generateChart(startDate,endDate,10);
+    		if (chartPanel != null) {
+    			chartPanel.setChart(chart);
+    		}
+    		else {
+    			chartPanel = new ChartPanel(chart);
+        		chartPanel.setSize(450,500);
+        		chartPanel.setLocation(450, 150);
+        		add(chartPanel);
+    		}
+    		repaint();
+    		revalidate();
+    		setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-	}
-}
+    
+        }
+            
+        else if (e.getSource() == barGraphReccomendedNutrients) {
+    		
+        	
+    		int startDayInt = Integer.valueOf(startDay.getText());
+    		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+    		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+    		
+    		int endDayInt = Integer.valueOf(endDay.getText());
+    		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+    		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+    		
+    		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+    		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+    		
+    	
+    		
+    		GenerateChart generateChart = new GenerateChart();
+    		JFreeChart chart;
+    		
+    		
+    		try {
+    			chart = generateChart.generateBarChartReccomendedMacro(startDate,endDate);
+    			if (chartPanel != null) {
+    				chartPanel.setChart(chart);
+    			}
+    			else {
+    				chartPanel = new ChartPanel(chart);
+    	    		chartPanel.setSize(450,500);
+    	    		chartPanel.setLocation(450, 150);
+    	    		add(chartPanel);
+    			}
+    			repaint();
+    			revalidate();
+    			setVisible(true);
+    			
+    		} catch (Exception e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		}
+    	
+    	    }
+   
+   else if (e.getSource() == barGraphMilli) {
+		
+   	
+		int startDayInt = Integer.valueOf(startDay.getText());
+		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+		
+		int endDayInt = Integer.valueOf(endDay.getText());
+		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+		
+		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+		
+	
+		
+		GenerateChart generateChart = new GenerateChart();
+		JFreeChart chart;
+		
+		
+		try {
+			chart = generateChart.generateBarChartReccomendedMilli(startDate,endDate);
+			if (chartPanel != null) {
+				chartPanel.setChart(chart);
+			}
+			else {
+				chartPanel = new ChartPanel(chart);
+	    		chartPanel.setSize(450,500);
+	    		chartPanel.setLocation(450, 150);
+	    		add(chartPanel);
+			}
+			repaint();
+			revalidate();
+			setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+	    }
+            
+   else if (e.getSource() == barGraphMicro) {
+		
+	   	
+		int startDayInt = Integer.valueOf(startDay.getText());
+		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+		
+		int endDayInt = Integer.valueOf(endDay.getText());
+		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+		
+		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+		
+	
+		
+		GenerateChart generateChart = new GenerateChart();
+		JFreeChart chart;
+		
+		
+		try {
+			chart = generateChart.generateBarChartReccomendedMicro(startDate,endDate);
+			if (chartPanel != null) {
+				chartPanel.setChart(chart);
+			}
+			else {
+				chartPanel = new ChartPanel(chart);
+	    		chartPanel.setSize(450,500);
+	    		chartPanel.setLocation(450, 150);
+	    		add(chartPanel);
+			}
+			repaint();
+			revalidate();
+			setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+	} 
+   
+   else if (e.getSource() == foodGroups) {
+		
+	   	
+		int startDayInt = Integer.valueOf(startDay.getText());
+		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+		
+		int endDayInt = Integer.valueOf(endDay.getText());
+		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+		
+		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+		
+	
+		
+		GenerateChart generateChart = new GenerateChart();
+		JFreeChart chart;
+		
+		
+		try {
+			chart = generateChart.generateBarChartFoodGroups(startDate,endDate);
+			if (chartPanel != null) {
+				chartPanel.setChart(chart);
+			}
+			else {
+				chartPanel = new ChartPanel(chart);
+	    		chartPanel.setSize(450,500);
+	    		chartPanel.setLocation(450, 150);
+	    		add(chartPanel);
+			}
+			repaint();
+			revalidate();
+			setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+	} 
+            
+   else if (e.getSource() == calories) {
+		
+	   	
+		int startDayInt = Integer.valueOf(startDay.getText());
+		int startMonthInt = Integer.valueOf(startMonth.getText()) - 1;
+		int startYearInt = Integer.valueOf(startYear.getText()) - 1900;
+		
+		int endDayInt = Integer.valueOf(endDay.getText());
+		int endMonthInt = Integer.valueOf(endMonth.getText()) - 1;
+		int endYearInt = Integer.valueOf(endYear.getText()) - 1900;
+		
+		Date startDate = new Date(startYearInt,startMonthInt,startDayInt); 
+		Date endDate = new Date(endYearInt,endMonthInt,endDayInt);
+		
+	
+		
+		GenerateChart generateChart = new GenerateChart();
+		JFreeChart chart;
+		
+		
+		try {
+			chart = generateChart.generateLineChartCalories(startDate,endDate);
+			if (chartPanel != null) {
+				chartPanel.setChart(chart);
+			}
+			else {
+				chartPanel = new ChartPanel(chart);
+	    		chartPanel.setSize(450,500);
+	    		chartPanel.setLocation(450, 150);
+	    		add(chartPanel);
+			}
+			repaint();
+			revalidate();
+			setVisible(true);
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+	} 
+   }
   /* public static void main(String[] args) throws IOException, InterruptedException, Exception {  
 		DataVisualizationPage test = new DataVisualizationPage();
    } */
