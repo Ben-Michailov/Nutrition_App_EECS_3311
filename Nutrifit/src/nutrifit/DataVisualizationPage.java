@@ -177,7 +177,7 @@ public class DataVisualizationPage extends JFrame implements ActionListener {
         barGraphMicro.addActionListener(this);
         c.add(barGraphMicro);
 
-        chartPanel.setEnabled(false);
+
    }
 
 

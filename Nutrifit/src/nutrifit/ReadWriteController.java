@@ -14,30 +14,13 @@ import java.sql.Date;
    
 public class ReadWriteController extends Database {  
      
-	//Connection conn = null;
-	
+	/*
+	 * These three functions below implement the singleton design pattern.
+	 */
 	private static ReadWriteController instance = null;
 
     private ReadWriteController(){
-    	/* try {  
-             // db parameters  
-         	String url = "jdbc:sqlite:test_database";
-             // create a connection to the database  
-             conn = DriverManager.getConnection(url);  
-               
-             System.out.println("Connection to SQLite has been established.");  
-               
-    	 	} catch (SQLException e) {  
-             System.out.println(e.getMessage());  
-    	 	} /*finally {  
-             try {  
-                 if (conn != null) {  
-                     conn.close();  
-                 }  
-             } catch (SQLException ex) {  
-                 System.out.println(ex.getMessage());  
-             }  
-         }*/
+
     	}
 
     public static ReadWriteController getInstance() {
@@ -48,7 +31,9 @@ public class ReadWriteController extends Database {
     }
 	
 
-	
+	/**
+	 * This method creates a new healthInfoLog table if it doesn't already exist
+	 */
     @Override
     public void createNewTable() {
 
@@ -79,19 +64,14 @@ public class ReadWriteController extends Database {
 
     }
     
-    public HealthInfo retrieveDataBetweenDates(Date startDate, Date endDate) throws Exception{
-    	
-
-    	long startDateInMS = startDate.getTime();
-    	long endDateInMS = endDate.getTime();
-    	
-    	if (endDateInMS < startDateInMS) {
-    		throw new Exception();
-    	}
-    	System.out.println(startDate.toString());
+    /**
+     * This function is used to turn a java Date object into a String that can be used in an SQL query.
+     * @param date, date that you would like to convert
+     * @return String of the form YYYY-MM-DD
+     */
+    private String dateToString(Date date) {
     	Calendar calStart = Calendar.getInstance();
-    	calStart.setTime(startDate);
-    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+    	calStart.setTime(date);
     	
     	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
     	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
@@ -101,24 +81,33 @@ public class ReadWriteController extends Database {
     	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
     		dayStart = "0"+dayStart;
     	}
-    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
+    	String output = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
     	
-    	Calendar calEnd = Calendar.getInstance();
-    	calEnd.setTime(endDate);
-    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
+    	return output;
+    }
+    
+    /**
+     * This is the most of the data retrieval methods. Returns the total calories consumed, calories burned, protein consumed, fat consumed,
+     * carbs consumed, and sugar consumed in the specified time period between start Date and end date.
+     * @param startDate
+     * @param endDate
+     * @return HealthInfo object that contains the result
+     * @throws Exception if startDate is later than endDate
+     */
+    public HealthInfo retrieveDataBetweenDates(Date startDate, Date endDate) throws Exception{
     	
-    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
-    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
-    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
-    		monthEnd = "0"+monthEnd;
-    	}
-    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
-    		dayEnd = "0"+dayEnd;
-    	}
-    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
 
-    	System.out.println(dateStartForSql);
-    	System.out.println(dateEndForSql);
+    	long startDateInMS = startDate.getTime();
+    	long endDateInMS = endDate.getTime();
+    	
+    	if (endDateInMS < startDateInMS) {
+    		throw new Exception();
+    	}
+
+    	String dateStartForSql = dateToString(startDate);
+    	
+    	String dateEndForSql = dateToString(endDate);
+
 
     	String sql="SELECT SUM(caloriesConsumed), SUM(protein), SUM(fat), SUM(carbohydrates), SUM(sugar), SUM(caloriesBurned) FROM healthInfoLog WHERE date>='"+dateStartForSql+"' AND date<='"+dateEndForSql+"'";
     	
@@ -130,7 +119,6 @@ public class ReadWriteController extends Database {
                
                // loop through the result set
     		 while(rs.next()) {
-              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
         		output.setCaloriesConsumed(rs.getInt("SUM(caloriesConsumed)"));
                	output.setProtein(rs.getDouble("SUM(protein)"));
             	output.setFat(rs.getDouble("SUM(fat)"));
@@ -144,12 +132,20 @@ public class ReadWriteController extends Database {
            } catch (SQLException e) {
                System.out.println(e.getMessage());
            }
-    	//System.out.println(output);
     	
     	return output;
     	
     }
     
+    /**
+     * This method returns a list of the top x nutrients consumed between the two dates and the amount of each. 
+     * x, the amount of nutrients listed is specified by the user 
+     * @param startDate
+     * @param endDate
+     * @param amountListed, the amount of different nutrients and their amounts listed.
+     * @return an ArrayList of NutrientNameAndAmount objects that corresponds with the top x nutrients and their amounts
+     * @throws Exception if startDate is later than endDate
+     */
 	public ArrayList<NutrientNameAndAmount> retrieveAdvancedDataBetweenDates(Date startDate, Date endDate, int amountListed) throws Exception{
 	    	
 	
@@ -161,37 +157,10 @@ public class ReadWriteController extends Database {
 	    	if (endDateInMS < startDateInMS) {
 	    		throw new Exception();
 	    	}
-	    	System.out.println(startDate.toString());
-	    	Calendar calStart = Calendar.getInstance();
-	    	calStart.setTime(startDate);
-	    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
 	    	
-	    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
-	    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
-	    	if ((calStart.get(Calendar.MONTH)+1)<10) {
-	    		monthStart = "0"+monthStart;
-	    	}
-	    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
-	    		dayStart = "0"+dayStart;
-	    	}
-	    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
+	    	String dateStartForSql = dateToString(startDate);
 	    	
-	    	Calendar calEnd = Calendar.getInstance();
-	    	calEnd.setTime(endDate);
-	    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
-	    	
-	    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
-	    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
-	    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
-	    		monthEnd = "0"+monthEnd;
-	    	}
-	    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
-	    		dayEnd = "0"+dayEnd;
-	    	}
-	    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
-	
-	    	System.out.println(dateStartForSql);
-	    	System.out.println(dateEndForSql);
+	    	String dateEndForSql = dateToString(endDate);
 	    	
 	    	
 	    	String sql="SELECT `nutrient name`.NutrientName AS NutrientName, (V.NutrientAmountSum / IF(STRCMP(`nutrient name`.NutrientUnit,\"mg\") = 0, 1000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"µg\") = 0, 1000000, 1) / IF(STRCMP(`nutrient name`.NutrientUnit,\"IU\") = 0, 3333000, 1) /  IF(STRCMP(`nutrient name`.NutrientUnit,\"NE\") = 0, 1000, 1)) "
@@ -206,7 +175,6 @@ public class ReadWriteController extends Database {
 	               
 	               // loop through the result set
 	    		 while(rs.next()) {
-	              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
 	    			 
 	    			resultArrayList.add(new NutrientNameAndAmount(rs.getString("NutrientName"),rs.getDouble("NutrientAmountSum")));
 	    		 } 
@@ -216,7 +184,6 @@ public class ReadWriteController extends Database {
 	           } catch (SQLException e) {
 	               System.out.println(e.getMessage());
 	           }
-	    	//System.out.println(output);
 	    	
 	    	for (int i =0; i<resultArrayList.size(); i++) {
 	    		System.out.println(resultArrayList.get(i));
@@ -227,7 +194,13 @@ public class ReadWriteController extends Database {
 	    }
 	
 	
-	
+	/**
+	 * This method returns the amount of servings eaten in each food group (meat, dairy, fruits + veggies and grain) between the two dates
+	 * @param startDate
+	 * @param endDate
+	 * @return an Arraylist of FoodAmountAndFoodGroup objects with the relevant data
+	 * @throws Exception if startDate is later than endDate
+	 */
 	public ArrayList<FoodAmountAndFoodGroup> retrieveFoodGroupDataBetweenDates(Date startDate, Date endDate) throws Exception{
 		long startDateInMS = startDate.getTime();
     	long endDateInMS = endDate.getTime();
@@ -237,38 +210,9 @@ public class ReadWriteController extends Database {
     	if (endDateInMS < startDateInMS) {
     		throw new Exception();
     	}
-    	System.out.println(startDate.toString());
-    	Calendar calStart = Calendar.getInstance();
-    	calStart.setTime(startDate);
-    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+    	String dateStartForSql = dateToString(startDate);
     	
-    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
-    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
-    	if ((calStart.get(Calendar.MONTH)+1)<10) {
-    		monthStart = "0"+monthStart;
-    	}
-    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
-    		dayStart = "0"+dayStart;
-    	}
-    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
-    	
-    	Calendar calEnd = Calendar.getInstance();
-    	calEnd.setTime(endDate);
-    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
-    	
-    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
-    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
-    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
-    		monthEnd = "0"+monthEnd;
-    	}
-    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
-    		dayEnd = "0"+dayEnd;
-    	}
-    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
-
-    	System.out.println(dateStartForSql);
-    	System.out.println(dateEndForSql);
-    	
+    	String dateEndForSql = dateToString(endDate);
     	
     	String sql="SELECT SUM((healthinfolog.amountRatio * 100)) As Amount, `food group`.FoodGroupID FROM `food group`, `food name`, healthinfolog WHERE `food group`.FoodGroupID = `food name`.FoodGroupID AND `food name`.FoodID = healthinfolog.FoodID AND healthinfolog.date >= '"+dateStartForSql+"' AND healthinfolog.date <= '"+dateEndForSql+"' GROUP BY `food group`.FoodGroupID";
     	
@@ -279,7 +223,6 @@ public class ReadWriteController extends Database {
                
                // loop through the result set
     		 while(rs.next()) {
-              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
     			 
     			resultArrayList.add(new FoodAmountAndFoodGroup(rs.getDouble("Amount"),rs.getInt("FoodGroupID")));
     		 } 
@@ -289,7 +232,7 @@ public class ReadWriteController extends Database {
            } catch (SQLException e) {
                System.out.println(e.getMessage());
            }
-    	//System.out.println(output);
+
     	
     	for (int i =0; i<resultArrayList.size(); i++) {
     		System.out.println(resultArrayList.get(i));
@@ -299,6 +242,13 @@ public class ReadWriteController extends Database {
     	
     }
    
+	/**
+	 * Retrieves daily caloric data (burned and consumed)
+	 * @param startDate
+	 * @param endDate
+	 * @return ArrayList of DateAndCalories objects with relevant data.
+	 * @throws Exception if startDate is later than endDate
+	 */
 	public ArrayList<DateAndCalories> retrieveCalorieDataBetweenDates(Date startDate, Date endDate) throws Exception{
 		long startDateInMS = startDate.getTime();
     	long endDateInMS = endDate.getTime();
@@ -308,38 +258,9 @@ public class ReadWriteController extends Database {
     	if (endDateInMS < startDateInMS) {
     		throw new Exception();
     	}
-    	System.out.println(startDate.toString());
-    	Calendar calStart = Calendar.getInstance();
-    	calStart.setTime(startDate);
-    	System.out.println("cal"+calStart.get(Calendar.YEAR)+","+calStart.get(Calendar.MONTH)+","+calStart.get(Calendar.DAY_OF_MONTH));
+    	String dateStartForSql = dateToString(startDate);
     	
-    	String monthStart = ""+(calStart.get(Calendar.MONTH)+1);
-    	String dayStart=""+calStart.get(Calendar.DAY_OF_MONTH);
-    	if ((calStart.get(Calendar.MONTH)+1)<10) {
-    		monthStart = "0"+monthStart;
-    	}
-    	if(calStart.get(Calendar.DAY_OF_MONTH)<10){
-    		dayStart = "0"+dayStart;
-    	}
-    	String dateStartForSql = calStart.get(Calendar.YEAR)+"-"+monthStart+"-"+dayStart;
-    	
-    	Calendar calEnd = Calendar.getInstance();
-    	calEnd.setTime(endDate);
-    	System.out.println("cal"+calEnd.get(Calendar.YEAR)+","+calEnd.get(Calendar.MONTH)+","+calEnd.get(Calendar.DAY_OF_MONTH));
-    	
-    	String monthEnd = ""+(calEnd.get(Calendar.MONTH)+1);
-    	String dayEnd=""+calEnd.get(Calendar.DAY_OF_MONTH);
-    	if ((calEnd.get(Calendar.MONTH)+1)<10) {
-    		monthEnd = "0"+monthEnd;
-    	}
-    	if(calEnd.get(Calendar.DAY_OF_MONTH)<10){
-    		dayEnd = "0"+dayEnd;
-    	}
-    	String dateEndForSql = calEnd.get(Calendar.YEAR)+"-"+monthEnd+"-"+dayEnd;
-
-    	System.out.println(dateStartForSql);
-    	System.out.println(dateEndForSql);
-    	
+    	String dateEndForSql = dateToString(endDate);
     	
     	String sql="SELECT healthinfolog.date, SUM(healthinfolog.caloriesConsumed), SUM(healthinfolog.caloriesBurned) FROM healthinfolog WHERE date >= '"+dateStartForSql+"' AND date <= '"+dateEndForSql+"' GROUP BY healthinfolog.date ORDER BY date";
 	
@@ -350,7 +271,7 @@ public class ReadWriteController extends Database {
                
                // loop through the result set
     		 while(rs.next()) {
-              //System.out.println(rs.getInt("SUM(caloriesConsumed)"));
+
     			 
     			resultArrayList.add(new DateAndCalories(rs.getDate("date"),rs.getInt("SUM(healthinfolog.caloriesConsumed)"), rs.getInt("SUM(healthinfolog.caloriesBurned)")));
     		 } 
@@ -360,16 +281,18 @@ public class ReadWriteController extends Database {
            } catch (SQLException e) {
                System.out.println(e.getMessage());
            }
-    	//System.out.println(output);
+
     	
-    	for (int i =0; i<resultArrayList.size(); i++) {
-    		System.out.println(resultArrayList.get(i));
-    	}
+
     	
     	return resultArrayList;
     	
     }
 	
+	/**
+	 * used to display a portion of the database to make sure it is working
+	 * @return last entry in the healthInfoLog database
+	 */
     public String debugDumpDatabase(){
         String sql = "SELECT * FROM healthInfoLog";
         String output = "";
@@ -447,39 +370,15 @@ public class ReadWriteController extends Database {
     	 	return false;
     }
     
+
     /**
-     * This 
-     * @return
+     * This method searches the food names database for the string the user entered into the search bar.
+     * @param search that user entered
+     * @return list of food names that contain user entered string
      */
-    public String[] foodNames() {
-    	String[] output = new String[5689];
-    	//String[] output = new String[5];
-    	int i = 0;
-    	String sql = "SELECT FoodDescription FROM `food name`"; 
-    	try (Connection conn = super.connect();
-                Statement stmt  = conn.createStatement();
-                ResultSet rs    = stmt.executeQuery(sql)){
-               
-    		while (rs.next()) {
-            	output[i] =rs.getString("FoodDescription");
-            	if (i<5688) {
-            		i++;
-            	}
-            	
-    		}
-    		System.out.println("in conn foodnames()");
-    	} catch (SQLException e) {
-    		System.out.println("there has been an error in  foodnames()");
-            System.out.println(e.getMessage());
-        }
-   	 
-    	return output;
-    }
-    
     public String[] searchFoodNames(String search) {
     	ArrayList<String> list = new ArrayList<String>();
     	
-    	//String[] output = new String[5];
     	String sql = "SELECT `food name`.FoodDescription FROM `food name` WHERE FoodDescription LIKE '%"+search+"%';"; 
     	try (Connection conn = super.connect();
                 Statement stmt  = conn.createStatement();
@@ -489,9 +388,8 @@ public class ReadWriteController extends Database {
     			list.add(rs.getString("FoodDescription"));
             	
     		}
-    		System.out.println("in conn foodnames()");
+
     	} catch (SQLException e) {
-    		System.out.println("there has been an error in  foodnames()");
             System.out.println(e.getMessage());
         }
     	
@@ -502,10 +400,13 @@ public class ReadWriteController extends Database {
     	return output;
     }
     
+    /**
+     * the FoodID of a food with a given name
+     * @param foodName the name of the food
+     * @return its foodID
+     */
     public int IDOfAGivenFood(String foodName) {
     	String output = "";
-    	System.out.println(foodName);
-    	System.out.println("in id of a given food");
     	String sql = "SELECT FoodID FROM `food name` WHERE FoodDescription='"+foodName+"'";
 
     	
@@ -514,33 +415,43 @@ public class ReadWriteController extends Database {
                 ResultSet rs    = stmt.executeQuery(sql)){
               
     		rs.next();
-    		System.out.println("in try conn for IDoffood()");
-    		System.out.println(rs.toString());
+
     		output = rs.getString("FoodID");
     		
     		System.out.println("in try conn for IDoffood()");
     		conn.close();
     		
     	} catch (SQLException e) {
-    		System.out.println("there has been an error in IDoffood()");
             System.out.println(e.getMessage());
         }
     	
-    	System.out.println("gonna return: " + output);
     	
     	return Integer.parseInt(output);
     	
     }
     
+    /**
+     * stores exercise into healthInfoLog table
+     * @param caloriesBurned
+     * @param date
+     * @throws Exception
+     */
     public void storeExercise(int caloriesBurned, Date date) throws Exception {
     	
         
-        
-        storeIntoHealthLogTable(date,'n',0,0,0,0.0,0.0,0.0,0.0, caloriesBurned);
+        HealthInfo parameter = new HealthInfo(date,'n',0,0,0,0.0,0.0,0.0,0.0, caloriesBurned);
+        storeIntoHealthLogTable(parameter);
         
     }
     
-    
+    /**
+     * stores meal into healthInfoLog table
+     * @param mealChar
+     * @param foodID
+     * @param amount
+     * @param date
+     * @throws Exception
+     */
     public void storeMeal(char mealChar, int foodID, int amount, Date date) throws Exception {
         
         
@@ -549,11 +460,6 @@ public class ReadWriteController extends Database {
         
         
         
-        /*if (mealChar != 's' && mealChar != 'n' && doesMealExist(mealChar, dateInMS)==true ) {
-
-        	throw new Exception();
-        };*/
-    	
     	
     	String sql = "SELECT NutrientValue FROM `nutrient amount` WHERE FoodID="+foodID+" AND (NutrientID=203 OR NutrientID=208 OR NutrientID=204 OR NutrientID = 205 OR NutrientID= 269);";
         
@@ -573,9 +479,7 @@ public class ReadWriteController extends Database {
             
             // loop through the result set
             while (rs.next()) {
-                /*System.out.println(rs.getInt("NutrientValue") +  "\t" + 
-                                   rs.getString("cityName") + "\t" +
-                                   rs.getDouble("temperature"));*/
+
             	if (i==0) {
             		protein = rs.getDouble("NutrientValue") * ratioToHundredGrams;
             	}
@@ -598,72 +502,60 @@ public class ReadWriteController extends Database {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("Calories Consumed " + caloriesConsumed + "protein" +protein+"fat"+fat+"carbs"+carbohydrates+"suagr"+ sugar);
+        HealthInfo parameter = new HealthInfo(date,mealChar,foodID, ratioToHundredGrams,caloriesConsumed,protein,fat,carbohydrates, sugar, 0);
+        /*Date date, char meal, int foodID, double amountRatio, int caloriesConsumed, double protein, double fat,
+		double carbohydrates, double sugar, int caloriesBurned*/
+        storeIntoHealthLogTable(parameter);
         
-        
-        storeIntoHealthLogTable(date,mealChar, foodID,ratioToHundredGrams,caloriesConsumed,fat,protein,carbohydrates, sugar, 0);
-        
-        //insert(date, )
+
         
     }
     
     
-    
-    private void storeIntoHealthLogTable(Date date, char meal, int foodID, double amountRatio, int caloriesConsumed, double fat, double protein, double carbohydrates, double sugar, int caloriesBurned) {
+    /**
+     * does the sql query needed to input into table.
+     * @param healthInfo
+     */
+    private void storeIntoHealthLogTable(HealthInfo healthInfo) {
         String sql = "INSERT INTO healthInfoLog(date, meal, foodID, amountRatio, caloriesConsumed, fat, protein, carbohydrates, sugar, caloriesBurned) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = super.connect();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-           // pstmt.setInt(0,id);
-            pstmt.setDate(1, date);
-            pstmt.setString(2, String.valueOf(meal));
-            pstmt.setInt(3,foodID);
-            pstmt.setDouble(4,amountRatio);
-            pstmt.setInt(5,caloriesConsumed);
-            pstmt.setDouble(6, fat);
-            pstmt.setDouble(7, protein);
-            pstmt.setDouble(8, carbohydrates);
-            pstmt.setDouble(9, sugar);
-            pstmt.setInt(10, caloriesBurned);
+
+            pstmt.setDate(1, healthInfo.getDate());
+            pstmt.setString(2, String.valueOf(healthInfo.getMeal()));
+            pstmt.setInt(3,healthInfo.getFoodID());
+            pstmt.setDouble(4,healthInfo.getAmountRatio());
+            pstmt.setInt(5,healthInfo.getCaloriesConsumed());
+            pstmt.setDouble(6, healthInfo.getFat());
+            pstmt.setDouble(7, healthInfo.getProtein());
+            pstmt.setDouble(8, healthInfo.getCarbohydrates());
+            pstmt.setDouble(9, healthInfo.getSugar());
+            pstmt.setInt(10, healthInfo.getCaloriesBurned());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 	
-    	@Override
-	public <T> T readTable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+    /**
+     * removes the healthInfoLog table
+     */
 	@Override
 	public void removeTable() {
-		// TODO Auto-generated method stub
+		try(Connection conn = super.connect();
+		         Statement stmt = conn.createStatement();
+		      ) {		      
+		         String sql = "DROP TABLE healthInfoLog";
+		         stmt.executeUpdate(sql);
+		         System.out.println("Table deleted in given database..."); 
+		         stmt.close();
+		         conn.close();
+		      } catch (SQLException e) {
+		         e.printStackTrace();
+		      } 
+		   }
 		
 	}
    
-  
-    /*public static void main(String[] args) throws IOException, InterruptedException, Exception {  
-        ReadWriteController test = new ReadWriteController();
-        /*test.connect();  
-        test.createNewTable();
-        Date d1 = new Date(123,9,16); 
-        test.storeMeal(MealType.SNACK,5,100,d1);
-        test.debugDumpDatabase();
-        
-        //test.insert()
-        System.out.println(d1);
-    	
-    	Date d1 = new Date(123,9,16); 
-    	Date d2 = new Date(0,0,0);
-        //test.storeMeal(MealType.SNACK,5,100,d1);
-        HealthInfo test2 = test.retrieveDataBetweenDates(d2, d1);
-        
-        System.out.println(test2);
-        
-        
-    	
-    	
-    }  */
-}  
+ 

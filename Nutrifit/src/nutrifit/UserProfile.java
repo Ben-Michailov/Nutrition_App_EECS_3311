@@ -83,7 +83,6 @@ public class UserProfile extends Database{
          * read and return user from UserProfile table
          *
          */
-    	@Override
     	public User readTable() {
 			 User user = new User();
 			 String sql = "SELECT name, age , DOB , height, weight,sex FROM user_profile WHERE id = 1";

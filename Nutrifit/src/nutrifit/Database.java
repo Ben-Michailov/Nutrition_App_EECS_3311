@@ -54,7 +54,9 @@ public abstract class Database {
 	
 	 public abstract void createNewTable();
 	 
-	 public abstract <T> T readTable();
+	 /*got rid of readTable because the subclass ReadWriteController does not use this function
+	 and thus only one of the subclasses (userProfile) needs it. Thus, it does not need to be in the super class.*/
+	 //public abstract <T> T readTable();
 	 
 	 public abstract void removeTable();
 	

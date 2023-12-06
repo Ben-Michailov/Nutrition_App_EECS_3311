@@ -38,7 +38,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     private int i =0;
     private JButton submitMeal;
     private boolean mealExists = true;
-    //private DefaultListModel modelFoods;
+
     
     MealLoggingState state;
     
@@ -91,14 +91,13 @@ public class MealLoggingPage extends JFrame implements ActionListener {
     
     ReadWriteController dataStorage = ReadWriteController.getInstance();
 	
-    //dataStorage.createNewTable();
+
     
     private String possibleMeals[]
             = { "breakfast","lunch","dinner","snack"};
     
 
     
-    private String possibleFoods[] = dataStorage.foodNames();
     
     public MealLoggingPage() throws IOException {
 
@@ -108,10 +107,10 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         setResizable(false);
 
         Container c = getContentPane();
-        //c.setBackground(Color.PINK);
+
         c.setLayout(null);
 
-        String s1 = ""; //dataStorage.debugDumpDatabase();
+        String s1 = ""; 
         tout = new JTextArea();
         tout.setFont(new Font("Arial", Font.PLAIN, 15));
         tout.setSize(300, 100);
@@ -211,8 +210,6 @@ public class MealLoggingPage extends JFrame implements ActionListener {
         c.add(food);
         
    
-        
-        //tfood = new JComboBox(possibleFoods);
         tfood=new JComboBox();
         tfood.setFont(new Font("Arial", Font.PLAIN, 15));
         tfood.setSize(400, 20);
@@ -426,7 +423,7 @@ public class MealLoggingPage extends JFrame implements ActionListener {
             	int YearInt = Integer.valueOf(year.getText()) - 1900;
             	
             	Date d1 = new Date(YearInt,monthInt,dayInt); 
-            	//long dateLong = d1.getTime();
+
             	
             	
             	mealExists = dataStorage.doesMealExist(selectedMeal, d1);
